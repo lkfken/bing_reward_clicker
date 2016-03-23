@@ -9,6 +9,7 @@ ROOT_DIR = Pathname.new(File.dirname(__FILE__))
 CONFIG_DIR = ROOT_DIR + 'config'
 LOGGER_DIR = ROOT_DIR + 'log'
 URL_CONFIG = CONFIG_DIR + 'search_url.yml'
+SEARCH_LOOP_TOTAL = 4
 
 directory CONFIG_DIR
 directory LOGGER_DIR
@@ -51,10 +52,9 @@ task :run => ['.env', URL_CONFIG, LOGGER_DIR] do
   score_before = wait_for(10){browser.find_element(:id => 'id_rc').text.to_i}
   logger.debug "Points before: #{score_before}"
 
-
   url = YAML::load_file(File.join('config', 'search_url.yml'))
-   1.times.each do
-     url.first(2).each do |u|
+   SEARCH_LOOP_TOTAL.times.each do
+     url.each do |u|
        browser.navigate.to u
        logger.debug "Navigate to #{u}"
        sleep(1)
@@ -68,13 +68,14 @@ task :run => ['.env', URL_CONFIG, LOGGER_DIR] do
   logger.debug "Points after: #{score_after}"
   logger.debug "Earned: #{score_after - score_before}"
 
-
   browser.close
   logger.debug 'Close browser'
+
   if headless
     headless.destroy
     logger.debug 'Destroy headless'
   end
+
 end
 
 def wait_for(seconds)
