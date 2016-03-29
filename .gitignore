@@ -88,3 +88,5 @@ log/
 config/
 Gemfile.lock
 .env
+.ruby-version
+
