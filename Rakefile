@@ -61,7 +61,6 @@ task :run => ['.env', URL_CONFIG, LOGGER_DIR] do
   end
 
   logger.debug 'Logged in'
-  abort
   score_before = wait_for(10) { browser.find_element(:id => 'id_rc').text.to_i }
   logger.debug "Points before: #{score_before}"
 
