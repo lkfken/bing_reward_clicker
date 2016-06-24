@@ -29,7 +29,7 @@ task :run => ['.env', URL_CONFIG, LOGGER_DIR] do
     logger.debug 'headless mode'
   end
 
-  browser = Selenium::WebDriver.for :firefox
+  browser = Selenium::WebDriver.for :firefox, :marionette => true
   logger.debug 'Navigate to Bing Dashboard'
   browser.navigate.to DASHBOARD_URL
 
