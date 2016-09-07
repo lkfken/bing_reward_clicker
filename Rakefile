@@ -14,9 +14,24 @@ SEARCH_LOOP_TOTAL = 4
 directory CONFIG_DIR
 directory LOGGER_DIR
 
-desc 'execute script'
-task :run => ['.env', URL_CONFIG, LOGGER_DIR] do
-  logger = Logger.new(LOGGER_DIR + 'run.log', shift_age = 7, shift_size = 1048576)
+def logger
+  @logger ||= Logger.new(LOGGER_DIR + 'run.log', shift_age = 7, shift_size = 1048576)
+end
+
+def browser
+  @browser ||= Selenium::WebDriver.for :firefox, :marionette => true
+end
+
+def stage
+  @stage ||= ENV['stage'].to_sym
+end
+
+def is_production?
+  stage == :production
+end
+
+desc 'connect to Bing Dashboard'
+task :connect => ['.env', URL_CONFIG, LOGGER_DIR] do
   Dotenv.load!
   username = ENV['bing_username']
   password = ENV['bing_password']
@@ -29,7 +44,6 @@ task :run => ['.env', URL_CONFIG, LOGGER_DIR] do
     logger.debug 'headless mode'
   end
 
-  browser = Selenium::WebDriver.for :firefox, :marionette => true
   logger.debug 'Navigate to Bing Dashboard'
   browser.navigate.to DASHBOARD_URL
 
@@ -61,14 +75,22 @@ task :run => ['.env', URL_CONFIG, LOGGER_DIR] do
   end
 
   logger.debug 'Logged in'
-  score_before = wait_for(10) { browser.find_element(:id => 'id_rc').text.to_i }
+end
+
+desc 'search using Bing'
+task :run => [:connect] do
+  score_before = 0
+  while score_before.zero?
+    score_before = wait_for(10) { browser.find_element(:id => 'id_rc').text.to_i }
+    sleep(2) if score_before.zero?
+  end
   logger.debug "Points before: #{score_before}"
 
   url = YAML::load_file(File.join('config', 'search_url.yml'))
   SEARCH_LOOP_TOTAL.times.each do
     url.each do |u|
       browser.navigate.to u
-      logger.debug "Navigate to #{u}"
+      logger.debug "Navigate to #{u}" unless is_production?
       sleep(1)
     end
   end
