@@ -35,6 +35,7 @@ def headless
     if defined? Headless
       headless = Headless.new
       headless.start
+      headless
     end
   end
 end
