@@ -82,6 +82,7 @@ task :connect => ['.env', URL_CONFIG, LOGGER_DIR] do
   end
 
   logger.debug 'Logged in'
+  sleep(5)
 end
 
 desc 'search using Bing'
