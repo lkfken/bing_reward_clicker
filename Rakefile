@@ -56,7 +56,7 @@ task :connect => ['.env', URL_CONFIG, LOGGER_DIR] do
   # login
   logger.debug 'Login...'
   # wait_for(10) { browser.find_element(:xpath => "//a[@h='ID=rewards,5088.1']").click }
-  wait_for(10) { browser.find_element(:id => "sign-in-link").click }
+  wait_for(10) { browser.find_element(:id => "signin-link").click }
   wait_for(10) { browser.find_element(:id => 'i0116').send_key(username) }
   browser.find_element(:id => 'i0118').send_key(password)
   browser.find_element(:id => 'idSIButton9').click
