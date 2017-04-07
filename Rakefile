@@ -80,7 +80,7 @@ task :connect => ['.env', URL_CONFIG, LOGGER_DIR] do
   sleep(sleep_duration)
 
   begin
-    wait_for(10) { browser.page_source.match(/Bing Rewards/) }
+    wait_for(10) { browser.page_source.match(/Available points/) }
   rescue Selenium::WebDriver::Error::JavascriptError => ex
     logger.fatal ex.message
     counter += 1
