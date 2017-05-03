@@ -86,6 +86,7 @@ crashlytics-build.properties
 # Created by .ignore support plugin (hsz.mobi)
 log/
 config/
+!config/schedule.rb
 Gemfile.lock
 .env
 .ruby-version
