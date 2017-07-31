@@ -62,16 +62,25 @@ task :connect => ['.env', URL_CONFIG, LOGGER_DIR] do
   rescue Selenium::WebDriver::Error::TimeOutError => ex
     hostname = Socket.gethostbyname(Socket.gethostname).first
     message  = [hostname, ex.message].join("\n")
-    Notification.deliver(recipient: ENV['recipient'], subject: 'bing_reward_clicker: Unable to locate sign in link', body: message)
+    Notification.deliver(recipient: ENV['recipient'], subject: 'bing_reward_clicker: Unable to locate sign in link', body: message, logger: logger)
     raise ex
   end
 
   # submit credential
-  wait_for(10) { browser.find_element(:id => 'i0116').send_key(username) }
-  browser.find_element(:id => 'idSIButton9').click
-  wait_for(10) { browser.page_source.match(/Enter the password for/) }
-  browser.find_element(:id => 'i0118').send_key(password)
-  browser.find_element(:id => 'idSIButton9').click
+  begin
+    wait_for(10) { browser.find_element(:id => 'i0116').send_key(username) }
+    browser.find_element(:id => 'idSIButton9').click
+    # wait_for(5) { browser.page_source.match(/Password/) }
+    browser.find_element(:id => 'i0118').send_key(password)
+    browser.find_element(:id => 'idSIButton9').click
+  rescue Selenium::WebDriver::Error::TimeOutError, Selenium::WebDriver::Error::NoSuchElementError => ex
+    message  = [hostname, ex.message].join("\n")
+    Notification.deliver(recipient: ENV['recipient'], subject: 'bing_reward_clicker: Unable to submit credential', body: message, logger: logger)
+    logger.error 'error on submitting the credential'
+    logger.error ex
+    logger.error 'Abort!'
+    raise ex
+  end
 
   sleep_duration = 1
   max_try        = 5

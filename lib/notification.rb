@@ -1,7 +1,7 @@
 require 'mail'
-require 'pp'
+require 'logger'
 class Notification
-  def self.deliver(recipient:, sender: 'do-not-reply@bing_reward_clicker.app', subject:, body:)
+  def self.deliver(recipient:, sender: 'do-not-reply@bing_reward_clicker.app', subject:, body:, logger: Logger.new($stderr))
     options = { :address              => "smtp.gmail.com",
                 :port                 => 587,
                 :domain               => 'bing_reward_clicker.app',
@@ -19,5 +19,6 @@ class Notification
       subject subject
       body body
     end
+    logger.debug "Notification sent to #{recipient} about #{subject}"
   end
 end

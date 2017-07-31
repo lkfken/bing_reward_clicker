@@ -1,10 +1,15 @@
 file '.env' do
+  lines = %w[
+    bing_username=<username>
+    bing_password=<password>
+    recipient=<recipient>
+    gmail_username=<gmail_account>
+    gmail_password=<gmail_password>
+  ]
   File.open('.env', 'w') do |f|
-    f.puts 'bing_username=<username>'
-    f.puts 'bing_password=<password>'
+    lines.each { |line| f.puts line }
   end
   warn 'Open .env file and enter the following information:'
-  warn 'bing_username=<username>'
-  warn 'bing_password=<password>'
+  warn lines.join("\n")
   abort
 end
