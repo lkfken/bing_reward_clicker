@@ -90,4 +90,4 @@ config/
 Gemfile.lock
 .env
 .ruby-version
-
+tmp/

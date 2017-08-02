@@ -77,7 +77,8 @@ task :connect => ['.env', URL_CONFIG, LOGGER_DIR] do
     browser.find_element(:id => 'idSIButton9').submit
 
   rescue Selenium::WebDriver::Error::TimeOutError, Selenium::WebDriver::Error::NoSuchElementError => ex
-    File.open("#{Time.now.strftime('%Y%m%d%H%M%S')}.html", 'w') { |f| f.puts browser.page_source }
+    filename = File.join('tmp', "#{Time.now.strftime('%Y%m%d%H%M%S')}.html")
+    File.open(filename, 'w') { |f| f.puts browser.page_source }
     message = [hostname, ex.message].join("\n")
     Notification.deliver(recipient: ENV['recipient'], subject: 'bing_reward_clicker: Unable to submit credential', body: message, logger: logger)
     logger.error 'error on submitting the credential'
