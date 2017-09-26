@@ -87,6 +87,7 @@ crashlytics-build.properties
 log/
 config/
 !config/schedule.rb
+!config/topics.yml
 Gemfile.lock
 .env
 .ruby-version

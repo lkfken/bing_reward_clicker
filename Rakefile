@@ -111,6 +111,14 @@ task :connect => ['.env', URL_CONFIG, LOGGER_DIR] do
   sleep(5)
 end
 
+def bing_urls
+  words  = YAML::load_file('./config/topics.yml')
+  topics = words.sample(30) # 5 points for each search, total 150 points could earn in one day
+  topics.map do |topic|
+    "https://www.bing.com/news?q=\"#{topic}\"+News&FORM=NSBABR"
+  end
+end
+
 desc 'search using Bing'
 task :run => [:connect] do
   score_before = 0
@@ -121,13 +129,11 @@ task :run => [:connect] do
   logger.debug "Points before: #{score_before}"
 
   if is_production?
-    url = YAML::load_file(File.join('config', 'search_url.yml'))
-    SEARCH_LOOP_TOTAL.times.each do
-      url.each do |u|
-        browser.navigate.to u
-        logger.debug "Navigate to #{u}" unless is_production?
-        sleep(1)
-      end
+    url = bing_urls
+    url.each do |u|
+      browser.navigate.to u
+      logger.debug "Navigate to #{u}" unless is_production?
+      sleep(rand(1..5))
     end
   end
 
