@@ -5,11 +5,11 @@ require 'yaml'
 require_relative 'lib/notification'
 
 DASHBOARD_URL = 'https://account.microsoft.com/rewards/dashboard'
+TOTAL_SEARCH = 30
 
-ROOT_DIR          = Pathname.new(File.dirname(__FILE__))
-CONFIG_DIR        = ROOT_DIR + 'config'
-LOGGER_DIR        = ROOT_DIR + 'log'
-SEARCH_LOOP_TOTAL = 4
+ROOT_DIR   = Pathname.new(File.dirname(__FILE__))
+CONFIG_DIR = ROOT_DIR + 'config'
+LOGGER_DIR = ROOT_DIR + 'log'
 
 directory CONFIG_DIR
 directory LOGGER_DIR
@@ -112,7 +112,7 @@ end
 
 def bing_urls
   words  = YAML::load_file('./config/topics.yml')
-  topics = words.sample(30) # 5 points for each search, total 150 points could earn in one day
+  topics = words.sample(TOTAL_SEARCH) # 5 points for each search, total 150 points could earn in one day
   topics.map do |topic|
     "https://www.bing.com/news?q=\"#{topic}\"+News&FORM=NSBABR"
   end
@@ -128,8 +128,7 @@ task :run => [:connect] do
   logger.debug "Points before: #{score_before}"
 
   if is_production?
-    url = bing_urls
-    url.each do |u|
+    bing_urls.each do |u|
       browser.navigate.to u
       logger.debug "Navigate to #{u}" unless is_production?
       sleep(rand(1..5))
