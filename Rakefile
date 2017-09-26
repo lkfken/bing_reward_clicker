@@ -9,7 +9,6 @@ DASHBOARD_URL = 'https://account.microsoft.com/rewards/dashboard'
 ROOT_DIR          = Pathname.new(File.dirname(__FILE__))
 CONFIG_DIR        = ROOT_DIR + 'config'
 LOGGER_DIR        = ROOT_DIR + 'log'
-URL_CONFIG        = CONFIG_DIR + 'search_url.yml'
 SEARCH_LOOP_TOTAL = 4
 
 directory CONFIG_DIR
@@ -42,7 +41,7 @@ def headless
 end
 
 desc 'connect to Bing Dashboard'
-task :connect => ['.env', URL_CONFIG, LOGGER_DIR] do
+task :connect => ['.env', LOGGER_DIR] do
   Dotenv.load!
   username = ENV['bing_username']
   password = ENV['bing_password']
