@@ -5,7 +5,7 @@ require 'yaml'
 require_relative 'lib/notification'
 
 DASHBOARD_URL = 'https://account.microsoft.com/rewards/dashboard'
-TOTAL_SEARCH = 30
+TOTAL_SEARCH  = 30
 
 ROOT_DIR   = Pathname.new(File.dirname(__FILE__))
 CONFIG_DIR = ROOT_DIR + 'config'
@@ -70,11 +70,8 @@ task :connect => ['.env', LOGGER_DIR] do
     wait_for(10) { browser.find_element(:id => 'i0116').send_key(username) }
     browser.find_element(:id => 'idSIButton9').click
     wait_for(5) { browser.page_source.match(/Password/) }
-    # browser.find_element(:id => 'i0118').send_key(password)
     wait_for(10) { browser.find_element(:id => 'i0118').send_key(password) }
-
-    browser.find_element(:id => 'idSIButton9').submit
-
+    browser.find_element(:id => 'idSIButton9').click
   rescue Selenium::WebDriver::Error::TimeOutError, Selenium::WebDriver::Error::NoSuchElementError => ex
     filename = File.join('tmp', "#{Time.now.strftime('%Y%m%d%H%M%S')}.html")
     File.open(filename, 'w') { |f| f.puts browser.page_source }
