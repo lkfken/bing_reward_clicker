@@ -103,6 +103,7 @@ task :connect => ['.env', LOGGER_DIR] do
   rescue Selenium::WebDriver::Error::TimeOutError => ex
     logger.fatal ex.message
     logger.fatal 'check your credential'
+    browser.save_screenshot("./tmp/#{Time.now.to_s}.png")
     raise ex
   end
 
