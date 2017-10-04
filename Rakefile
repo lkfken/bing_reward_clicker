@@ -16,8 +16,10 @@ directory LOGGER_DIR
 
 def logger
   @logger ||= begin
-    log_dev = is_production? ? File.join(LOGGER_DIR, 'run.log') : $stderr
-    Logger.new(log_dev, shift_age = 7, shift_size = 1048576)
+    log_dev   = is_production? ? File.join(LOGGER_DIR, 'run.log') : $stderr
+    log       = Logger.new(log_dev, shift_age = 7, shift_size = 1048576)
+    log.level = is_production? ? Logger::INFO : Logger::DEBUG
+    log
   end
 end
 
@@ -50,14 +52,14 @@ task :connect => ['.env', LOGGER_DIR] do
   password = ENV['bing_password']
   abort "please config your .env file" if username == '<username>'
 
-  logger.debug 'Running...'
-  logger.debug 'headless mode' if headless
+  logger.info 'Running...'
+  logger.info 'headless mode' if headless
 
-  logger.debug 'Navigate to Bing Dashboard'
+  logger.info 'Navigate to Bing Dashboard'
   browser.navigate.to DASHBOARD_URL
 
   # login
-  logger.debug 'Login...'
+  logger.info 'Login...'
   sign_in_link = { :xpath => "//div[contains(@class, 'msame_Header_name msame_TxtTrunc') and text()='Sign in']" }
   begin
     wait_for(10) { browser.find_element(sign_in_link).click }
@@ -108,7 +110,7 @@ task :connect => ['.env', LOGGER_DIR] do
     raise ex
   end
 
-  logger.debug 'Logged in'
+  logger.info 'Logged in'
   sleep(5)
 end
 
@@ -127,7 +129,7 @@ task :run => [:connect] do
     score_before = wait_for(10) { browser.find_element(:class => 'info-title').text.gsub(',', '').to_i }
     sleep(2) if score_before.zero?
   end
-  logger.debug "Points before: #{score_before}"
+  logger.info "Points before: #{score_before}"
 
   if is_production?
     bing_urls.each do |u|
@@ -142,15 +144,15 @@ task :run => [:connect] do
   # wait_for(10) { browser.page_source.match(/Bing Rewards/) }
   wait_for(10) { browser.find_element(:id => 'rewards-helplinks-contact-microsoft-rewards-support') }
   score_after = wait_for(10) { browser.find_element(:class => 'info-title').text.gsub(',', '').to_i }
-  logger.debug "Points after: #{score_after}"
-  logger.debug "Earned: #{score_after - score_before}"
+  logger.info "Points after: #{score_after}"
+  logger.info "Earned: #{score_after - score_before}"
 
   browser.close
-  logger.debug 'Close browser'
+  logger.info 'Close browser'
 
   if headless
     headless.destroy
-    logger.debug 'Destroy headless'
+    logger.info 'Destroy headless'
   end
 
 end
