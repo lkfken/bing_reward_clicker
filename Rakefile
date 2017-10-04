@@ -15,7 +15,10 @@ directory CONFIG_DIR
 directory LOGGER_DIR
 
 def logger
-  @logger ||= Logger.new(LOGGER_DIR + 'run.log', shift_age = 7, shift_size = 1048576)
+  @logger ||= begin
+    log_dev = is_production? ? File.join(LOGGER_DIR, 'run.log') : $stderr
+    Logger.new(log_dev, shift_age = 7, shift_size = 1048576)
+  end
 end
 
 def browser
@@ -23,7 +26,7 @@ def browser
 end
 
 def stage
-  @stage ||= ENV['stage'].to_sym
+  @stage ||= ENV['stage'].downcase.to_sym
 end
 
 def is_production?
@@ -69,6 +72,7 @@ task :connect => ['.env', LOGGER_DIR] do
   begin
     wait_for(10) { browser.find_element(:id => 'i0116').send_key(username) }
     browser.find_element(:id => 'idSIButton9').click
+    sleep(5)
     wait_for(5) { browser.page_source.match(/Password/) }
     wait_for(10) { browser.find_element(:id => 'i0118').send_key(password) }
     browser.find_element(:id => 'idSIButton9').click
@@ -127,9 +131,9 @@ task :run => [:connect] do
 
   if is_production?
     bing_urls.each do |u|
-      browser.navigate.to u
-      logger.debug "Navigate to #{u}" unless is_production?
-      sleep(rand(1..5))
+      browser.navigate.to u if is_production?
+      logger.debug "Navigate to #{u}"
+      sleep(rand(1..5)) if is_production?
     end
   end
 
