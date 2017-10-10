@@ -1,21 +1,13 @@
 ---
-- CFL
-- MLB
-- MLS
-- NBA
-- NFL
-- NHL
-- soccer
-- CBB
-- golf
-- tennis
-- badminton
+- Aquatics
 - Archery
 - Athletics
 - Billiards
 - Bobsleigh
 - Bowling
 - Boxing
+- CBB
+- CFL
 - Canoe
 - Canoe Slalom
 - Chess
@@ -25,53 +17,55 @@
 - Dancing
 - Darts
 - Discus
+- Diving
 - Downhill Skiing
 - Endourance course
 - Fencing
 - Figure
-- Skating
 - Fishing
+- Football
 - Formula 1
 - Giant
-- Slalom
 - Gliding
 - Gymnastics
 - Hammer Throwing
 - Hang-gliding
 - High
-- Diving
 - High jump
 - Hiking
 - Horse
-- Racing
 - Hunting
 - Hurdle Race
 - Ice Hockey
 - Javelin
 - Jogging
+- Jumping
 - Kayak
-- long distance run
+- Lifting
 - Long jump
 - Luge
+- MLB
+- MLS
 - Modern
-- Pentathlon
 - Motorsports
 - Mountaineering
+- NBA
+- NFL
+- NHL
 - Netball
 - Nordic Combined
 - Orienteering
 - Paintball
 - Parachuting
+- Pentathlon
 - Pole Vault
-- Relay
 - Race
+- Racing
+- Relay
 - Rhythmic
-- Gymnastics
 - Riding, Equestrian
 - Rope
-- Skipping
 - Rowing
-- run the 100 metres
 - Running
 - Sailing
 - Shooting
@@ -79,23 +73,29 @@
 - Skateboarding
 - Skating
 - Ski
-- Jumping
 - Skiing
+- Skipping
+- Slalom
 - Snowboarding
-- Football
 - Speed
-- Skating
 - Sprint
 - Surfing
-- Aquatics
 - Synchronized Swimming
 - Table
 - Track and Field
-- tug-of-war
 - Walking
 - Water Polo
 - Waterski
 - Weight
-- Lifting
 - Windsurfing
 - Wrestling
+- badminton
+- golf
+- long distance run
+- run the 100 metres
+- soccer
+- tennis
+- tug-of-war
+- ruby language
+- elixir language
+- golang
