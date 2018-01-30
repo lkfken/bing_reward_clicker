@@ -126,7 +126,7 @@ desc 'search using Bing'
 task :run => [:connect] do
   score_before = 0
   while score_before.zero?
-    score_before = wait_for(10) { browser.find_element(:class => 'info-title').text.gsub(',', '').to_i }
+    score_before = wait_for(10) { bing_score }
     sleep(2) if score_before.zero?
   end
   logger.info "Points before: #{score_before}"
@@ -143,7 +143,7 @@ task :run => [:connect] do
   browser.navigate.to DASHBOARD_URL
   # wait_for(10) { browser.page_source.match(/Bing Rewards/) }
   wait_for(10) { browser.find_element(:id => 'rewards-helplinks-contact-microsoft-rewards-support') }
-  score_after = wait_for(10) { browser.find_element(:class => 'info-title').text.gsub(',', '').to_i }
+  score_after = wait_for(10) { bing_score }
   logger.info "Points after: #{score_after}"
   logger.info "Earned: #{score_after - score_before}"
 
@@ -155,6 +155,10 @@ task :run => [:connect] do
     logger.info 'Destroy headless'
   end
 
+end
+
+def bing_score
+  browser.find_element(:id => '$ctrl.id').text.gsub(',', '').to_i
 end
 
 def wait_for(seconds)
