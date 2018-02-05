@@ -6,6 +6,7 @@ require 'pp'
 require_relative 'lib/notification'
 
 DASHBOARD_URL = 'https://account.microsoft.com/rewards/dashboard'
+BING_URL = 'http://www.bing.com'
 TOTAL_SEARCH  = 30
 
 ROOT_DIR   = Pathname.new(File.dirname(__FILE__))
@@ -125,7 +126,7 @@ end
 
 desc 'search using Bing'
 task :run => [:connect] do
-  browser.navigate.to 'http://www.bing.com'
+  browser.navigate.to BING_URL
   score_before = 0
   while score_before.zero?
     score_before = wait_for(10) { bing_score }
@@ -143,7 +144,7 @@ task :run => [:connect] do
   end
 
   # check final points
-  browser.navigate.to 'http://www.bing.com'
+  browser.navigate.to BING_URL
   wait_for(10) { browser.find_element(:class => 'hp_sw_logo') }
   score_after = 0
   while score_after.zero?
