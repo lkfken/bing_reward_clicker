@@ -6,15 +6,17 @@ require 'pp'
 require_relative 'lib/notification'
 
 DASHBOARD_URL = 'https://account.microsoft.com/rewards/dashboard'
-BING_URL = 'http://www.bing.com'
+BING_URL      = 'http://www.bing.com'
 TOTAL_SEARCH  = 30
 
 ROOT_DIR   = Pathname.new(File.dirname(__FILE__))
 CONFIG_DIR = ROOT_DIR + 'config'
 LOGGER_DIR = ROOT_DIR + 'log'
+TMP_DIR    = ROOT_DIR + 'tmp'
 
 directory CONFIG_DIR
 directory LOGGER_DIR
+directory TMP_DIR
 
 def logger
   @logger ||= begin
@@ -48,7 +50,7 @@ def headless
 end
 
 desc 'connect to Bing Dashboard'
-task :connect => ['.env', LOGGER_DIR] do
+task :connect => ['.env', LOGGER_DIR, TMP_DIR] do
   Dotenv.load!
   username = ENV['bing_username']
   password = ENV['bing_password']
@@ -95,10 +97,11 @@ task :connect => ['.env', LOGGER_DIR] do
   max_try        = 5
   counter        = 0
 
+  browser.navigate.to BING_URL
   sleep(sleep_duration)
 
   begin
-    wait_for(10) { browser.page_source.match(/Available points/) }
+    wait_for(10) { browser.find_element(:id => 'id_n') }
   rescue Selenium::WebDriver::Error::JavascriptError => ex
     logger.fatal ex.message
     counter += 1
@@ -108,11 +111,17 @@ task :connect => ['.env', LOGGER_DIR] do
   rescue Selenium::WebDriver::Error::TimeOutError => ex
     logger.fatal ex.message
     logger.fatal 'check your credential'
-    browser.save_screenshot("./tmp/#{Time.now.to_s}.png")
+    browser.save_screenshot(File.join(TMP_DIR, "#{Time.now.to_s}.png"))
     raise ex
   end
 
-  logger.info 'Logged in'
+  user = ''
+  while user.empty?
+    user = browser.find_element(:id => 'id_n').text.strip
+    pp user
+  end
+
+  logger.info "Logged in as #{user}"
   sleep(5)
 end
 
@@ -156,7 +165,7 @@ task :run => [:connect] do
   logger.info "Points after: #{score_after}"
   logger.info "Earned: #{score_after - score_before}"
 
-  browser.close
+  browser.close if is_production?
   logger.info 'Close browser'
 
   if headless
