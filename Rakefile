@@ -2,9 +2,10 @@ require 'bundler'
 Bundler.require
 require 'logger'
 require 'yaml'
+require 'pp'
 require_relative 'lib/notification'
 
-DASHBOARD_URL = 'https://account.microsoft.com/rewards/dashboard'
+DASHBOARD_URL = 'https://www.bing.com'
 TOTAL_SEARCH  = 30
 
 ROOT_DIR   = Pathname.new(File.dirname(__FILE__))
@@ -124,9 +125,11 @@ end
 
 desc 'search using Bing'
 task :run => [:connect] do
+  browser.navigate.to DASHBOARD_URL
   score_before = 0
   while score_before.zero?
     score_before = wait_for(10) { bing_score }
+    pp score_before
     sleep(2) if score_before.zero?
   end
   logger.info "Points before: #{score_before}"
@@ -141,9 +144,14 @@ task :run => [:connect] do
 
   # check final points
   browser.navigate.to DASHBOARD_URL
-  # wait_for(10) { browser.page_source.match(/Bing Rewards/) }
-  wait_for(10) { browser.find_element(:id => 'rewards-helplinks-contact-microsoft-rewards-support') }
-  score_after = wait_for(10) { bing_score }
+  wait_for(10) { browser.find_element(:class => 'hp_sw_logo') }
+  score_after = 0
+  while score_after.zero?
+    score_after = wait_for(10) { bing_score }
+    pp score_after
+    sleep(2) if score_after.zero?
+  end
+
   logger.info "Points after: #{score_after}"
   logger.info "Earned: #{score_after - score_before}"
 
@@ -158,7 +166,7 @@ task :run => [:connect] do
 end
 
 def bing_score
-  browser.find_element(:id => '$ctrl.id').text.gsub(',', '').to_i
+  browser.find_element(:id => 'id_rc').text.gsub(',', '').to_i
 end
 
 def wait_for(seconds)
