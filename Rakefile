@@ -118,7 +118,6 @@ task :connect => ['.env', LOGGER_DIR, TMP_DIR] do
   user = ''
   while user.empty?
     user = browser.find_element(:id => 'id_n').text.strip
-    pp user
   end
 
   logger.info "Logged in as #{user}"
@@ -139,7 +138,6 @@ task :run => [:connect] do
   score_before = 0
   while score_before.zero?
     score_before = wait_for(10) { bing_score }
-    pp score_before
     sleep(2) if score_before.zero?
   end
   logger.info "Points before: #{score_before}"
@@ -158,7 +156,6 @@ task :run => [:connect] do
   score_after = 0
   while score_after.zero?
     score_after = wait_for(10) { bing_score }
-    pp score_after
     sleep(2) if score_after.zero?
   end
 
