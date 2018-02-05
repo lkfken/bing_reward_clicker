@@ -7,7 +7,7 @@ require_relative 'lib/notification'
 
 DASHBOARD_URL = 'https://account.microsoft.com/rewards/dashboard'
 BING_URL      = 'http://www.bing.com'
-TOTAL_SEARCH  = 30
+TOTAL_SEARCH  = 34
 
 ROOT_DIR   = Pathname.new(File.dirname(__FILE__))
 CONFIG_DIR = ROOT_DIR + 'config'
