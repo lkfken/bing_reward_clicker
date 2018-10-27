@@ -67,8 +67,8 @@ task :connect => ['.env', LOGGER_DIR, TMP_DIR] do
 
   # login
   logger.info 'Login...'
-  # xpath = "//div[contains(@class, 'mectrl_profilepic mectrl_glyph glyph_signIn_circle')]"
-  xpath = "//div[contains(@class, 'mectrl_signin mectrl_truncate') and text()='Sign in']"
+  xpath = "//div[contains(@class, 'mectrl_profilepic mectrl_glyph glyph_signIn_circle')]"
+  # xpath = "//div[contains(@class, 'mectrl_signin mectrl_truncate') and text()='Sign in']"
   sign_in_link = {:xpath => xpath}
 
   begin
