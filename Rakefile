@@ -6,13 +6,13 @@ require 'pp'
 require_relative 'lib/notification'
 
 DASHBOARD_URL = 'https://account.microsoft.com/rewards/dashboard'
-BING_URL      = 'http://www.bing.com'
-TOTAL_SEARCH  = 34
+BING_URL = 'http://www.bing.com'
+TOTAL_SEARCH = 34
 
-ROOT_DIR   = Pathname.new(File.dirname(__FILE__))
+ROOT_DIR = Pathname.new(File.dirname(__FILE__))
 CONFIG_DIR = ROOT_DIR + 'config'
 LOGGER_DIR = ROOT_DIR + 'log'
-TMP_DIR    = ROOT_DIR + 'tmp'
+TMP_DIR = ROOT_DIR + 'tmp'
 
 directory CONFIG_DIR
 directory LOGGER_DIR
@@ -20,8 +20,8 @@ directory TMP_DIR
 
 def logger
   @logger ||= begin
-    log_dev   = is_production? ? File.join(LOGGER_DIR, 'run.log') : $stderr
-    log       = Logger.new(log_dev, shift_age = 7, shift_size = 1048576)
+    log_dev = is_production? ? File.join(LOGGER_DIR, 'run.log') : $stderr
+    log = Logger.new(log_dev, shift_age = 7, shift_size = 1048576)
     log.level = is_production? ? Logger::INFO : Logger::DEBUG
     log
   end
@@ -62,46 +62,46 @@ task :connect => ['.env', LOGGER_DIR, TMP_DIR] do
   logger.info 'Navigate to Bing Dashboard'
   browser.navigate.to DASHBOARD_URL
 
+  #maximize browser
+  browser.manage.window.maximize
+
   # login
   logger.info 'Login...'
-  sign_in_link = { :xpath => "//div[contains(@class, 'msame_Header_name msame_TxtTrunc') and text()='Sign in']" }
+  # xpath = "//div[contains(@class, 'mectrl_profilepic mectrl_glyph glyph_signIn_circle')]"
+  xpath = "//div[contains(@class, 'mectrl_signin mectrl_truncate') and text()='Sign in']"
+  sign_in_link = {:xpath => xpath}
+
   begin
-    wait_for(10) { browser.find_element(sign_in_link).click }
-  rescue Selenium::WebDriver::Error::TimeOutError => ex
+    browser.find_element(sign_in_link).click
+  rescue Selenium::WebDriver::Error::NoSuchElementError => ex
     hostname = Socket.gethostbyname(Socket.gethostname).first
-    message  = [hostname, ex.message].join("\n")
-    Notification.deliver(recipient: ENV['recipient'], subject: 'bing_reward_clicker: Unable to locate sign in link', body: message, logger: logger)
-    raise ex
+    messages = [" Host : #{hostname}", ex.message]
+    if is_production?
+      Notification.deliver(recipient: ENV['recipient'], subject: 'bing_reward_clicker: Unable to locate sign in link', body: messages.join("\n"), logger: logger)
+    else
+      logger.error messages.join(' ')
+    end
+    raise ex.class, messages.join(' ')
   end
 
-  # submit credential
-  begin
-    wait_for(10) { browser.find_element(:id => 'i0116').send_key(username) }
-    browser.find_element(:id => 'idSIButton9').click
-    sleep(5)
-    wait_for(5) { browser.page_source.match(/Password/) }
-    wait_for(10) { browser.find_element(:id => 'i0118').send_key(password) }
-    browser.find_element(:id => 'idSIButton9').click
-  rescue Selenium::WebDriver::Error::TimeOutError, Selenium::WebDriver::Error::NoSuchElementError => ex
-    filename = File.join('tmp', "#{Time.now.strftime('%Y%m%d%H%M%S')}.html")
-    File.open(filename, 'w') { |f| f.puts browser.page_source }
-    message = [hostname, ex.message].join("\n")
-    Notification.deliver(recipient: ENV['recipient'], subject: 'bing_reward_clicker: Unable to submit credential', body: message, logger: logger)
-    logger.error 'error on submitting the credential'
-    logger.error ex
-    logger.error 'Abort!'
-    raise ex
-  end
+  logger.info 'Submit username...'
+  browser.find_element(:id => 'i0116').send_key(username)
+  browser.find_element(:id => 'idSIButton9').click
+
+  logger.info 'Submit password...'
+  browser.page_source.match(/Password/)
+  browser.find_element(:id => 'i0118').send_key(password)
+  browser.find_element(:id => 'idSIButton9').click
 
   sleep_duration = 1
-  max_try        = 5
-  counter        = 0
+  max_try = 5
+  counter = 0
 
   browser.navigate.to BING_URL
   sleep(sleep_duration)
 
   begin
-    wait_for(10) { browser.find_element(:id => 'id_n') }
+    wait_for(10) {browser.find_element(:id => 'id_n')}
   rescue Selenium::WebDriver::Error::JavascriptError => ex
     logger.fatal ex.message
     counter += 1
@@ -125,7 +125,7 @@ task :connect => ['.env', LOGGER_DIR, TMP_DIR] do
 end
 
 def bing_urls
-  words  = YAML::load_file('./config/topics.yml')
+  words = YAML::load_file('./config/topics.yml')
   topics = words.sample(TOTAL_SEARCH) # 5 points for each search, total 150 points could earn in one day
   topics.map do |topic|
     "https://www.bing.com/news?q=\"#{topic}\"+News&FORM=NSBABR"
@@ -137,7 +137,7 @@ task :run => [:connect] do
   browser.navigate.to BING_URL
   score_before = 0
   while score_before.zero?
-    score_before = wait_for(10) { bing_score }
+    score_before = wait_for(10) {bing_score}
     sleep(2) if score_before.zero?
   end
   logger.info "Points before: #{score_before}"
@@ -152,10 +152,10 @@ task :run => [:connect] do
 
   # check final points
   browser.navigate.to BING_URL
-  wait_for(10) { browser.find_element(:class => 'hp_sw_logo') }
+  wait_for(10) {browser.find_element(:class => 'hp_sw_logo')}
   score_after = 0
   while score_after.zero?
-    score_after = wait_for(10) { bing_score }
+    score_after = wait_for(10) {bing_score}
     sleep(2) if score_after.zero?
   end
 
@@ -177,5 +177,5 @@ def bing_score
 end
 
 def wait_for(seconds)
-  Selenium::WebDriver::Wait.new(timeout: seconds).until { yield }
+  Selenium::WebDriver::Wait.new(timeout: seconds).until {yield}
 end
