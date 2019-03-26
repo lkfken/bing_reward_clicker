@@ -115,11 +115,11 @@ task :connect => ['.env', LOGGER_DIR, TMP_DIR] do
     raise ex
   end
 
+  sleep(3)
   user = ''
   begin
     user = browser.find_element(:id => 'id_n').text.strip
   rescue Selenium::WebDriver::Error::NoSuchElementError => ex
-    sleep(3)
     browser.save_screenshot(File.join(TMP_DIR, "#{Time.now.to_s}.png"))
     logger.error user.inspect
     retry if counter < max_try
