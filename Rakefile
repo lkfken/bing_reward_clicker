@@ -43,7 +43,10 @@ def browser
     options = Selenium::WebDriver::Firefox::Options.new
     options.profile = profile
 
-    Selenium::WebDriver.for :firefox, :marionette => true, :options => options
+    driver = Selenium::WebDriver.for :firefox, :marionette => true, :options => options
+    agent = driver.execute_script("return navigator.userAgent")
+    logger.debug "Agent now: #{agent}"
+    driver
   end
 end
 
