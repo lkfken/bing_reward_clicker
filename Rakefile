@@ -118,6 +118,8 @@ task :connect => ['.env', LOGGER_DIR, TMP_DIR] do
   user = ''
   while user.empty?
     user = browser.find_element(:id => 'id_n').text.strip
+    logger.debug "#{user.inspect}"
+    sleep(3) unless user
   end
 
   logger.info "Logged in as #{user}"
