@@ -29,20 +29,21 @@ end
 
 def browser
   @browser ||= begin
-    unless is_production?
-      driver = Selenium::WebDriver.for :firefox, :marionette => true
-      original_agent = driver.execute_script("return navigator.userAgent")
-      logger.debug "Original Agent: #{original_agent}"
-    end
-
-
-    profile = Selenium::WebDriver::Firefox::Profile.new
-    profile['general.useragent.override'] = 'Mozilla/5.0 (Android 5.0.1; Mobile; rv:58.0) Gecko/58.0 Firefox/58.0'
-    profile['general.useragent.override'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' + 'AppleWebKit/537.36 (KHTML, like Gecko) ' + 'Chrome/64.0.3282.140 Safari/537.36 Edge/17.17134'
-    options = Selenium::WebDriver::Firefox::Options.new
-    options.profile = profile
-
-    driver = Selenium::WebDriver.for :firefox, :marionette => true, :options => options
+    # unless is_production?
+    #   driver = Selenium::WebDriver.for :firefox, :marionette => true
+    #   original_agent = driver.execute_script("return navigator.userAgent")
+    #   logger.debug "Original Agent: #{original_agent}"
+    # end
+    #
+    # profile = Selenium::WebDriver::Firefox::Profile.new
+    # profile['general.useragent.override'] = 'Mozilla/5.0 (Android 5.0.1; Mobile; rv:58.0) Gecko/58.0 Firefox/58.0'
+    # profile['general.useragent.override'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' + 'AppleWebKit/537.36 (KHTML, like Gecko) ' + 'Chrome/64.0.3282.140 Safari/537.36 Edge/17.17134'
+    # options = Selenium::WebDriver::Firefox::Options.new
+    # options.profile = profile
+    #
+    # driver = Selenium::WebDriver.for :firefox, :marionette => true, :options => options
+    #
+    driver = Selenium::WebDriver.for :firefox, :marionette => true
     agent = driver.execute_script("return navigator.userAgent")
     logger.debug "Agent now: #{agent}"
     driver
@@ -94,10 +95,10 @@ task :connect => ['.env', LOGGER_DIR, TMP_DIR] do
   wait_for(10) {browser.find_element(:id => 'idSIButton9')}
   browser.find_element(:id => 'idSIButton9').click
   browser.find_element(:name => 'passwd').clear
-    browser.find_element(:name => 'passwd').send_key(password)
-  sleep(10) unless is_production?
-  browser.save_screenshot(File.join(TMP_DIR, "pw_#{Time.now.strftime('%Y%m%d%H%M%S')}.png")) unless is_production?
-  File.open(TMP_DIR + "pw_#{Time.now.strftime('%Y%m%d%H%M%S')}.html", 'w') {|f| f.puts browser.page_source} unless is_production?
+  browser.find_element(:name => 'passwd').send_key(password)
+  # sleep(10) unless is_production?
+  # browser.save_screenshot(File.join(TMP_DIR, "pw_#{Time.now.strftime('%Y%m%d%H%M%S')}.png")) unless is_production?
+  # File.open(TMP_DIR + "pw_#{Time.now.strftime('%Y%m%d%H%M%S')}.html", 'w') {|f| f.puts browser.page_source} unless is_production?
   browser.find_element(:id => 'idSIButton9').click
 
   sleep_duration = 1
