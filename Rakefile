@@ -119,7 +119,7 @@ task :connect => ['.env', LOGGER_DIR, TMP_DIR] do
   begin
     user = browser.find_element(:id => 'id_n').text.strip
     raise if user.empty?
-  rescue
+  rescue => ex
     sleep(3)
     counter += 1
     retry if counter < max_try
