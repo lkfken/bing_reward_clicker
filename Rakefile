@@ -38,7 +38,7 @@ def browser
 
     profile = Selenium::WebDriver::Firefox::Profile.new
     profile['general.useragent.override'] = 'Mozilla/5.0 (Android 5.0.1; Mobile; rv:58.0) Gecko/58.0 Firefox/58.0'
-
+    profile['general.useragent.override'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' + 'AppleWebKit/537.36 (KHTML, like Gecko) ' + 'Chrome/64.0.3282.140 Safari/537.36 Edge/17.17134'
     options = Selenium::WebDriver::Firefox::Options.new
     options.profile = profile
 
@@ -108,7 +108,7 @@ task :connect => ['.env', LOGGER_DIR, TMP_DIR] do
 
   logger.info 'Submit password...'
   browser.page_source.match(/Password/)
-  wait_for(10){browser.find_element(:id => 'idSIButton9')}
+  wait_for(10) {browser.find_element(:id => 'idSIButton9')}
   browser.find_element(:id => 'i0118').send_key(password)
   browser.find_element(:id => 'idSIButton9').click
 
