@@ -22,7 +22,7 @@ def logger
   @logger ||= begin
     log_dev = is_production? ? (LOGGER_DIR + 'run.log') : (LOGGER_DIR + "#{stage.to_s}.log")
     lgr = Logger.new(log_dev) #Selenium::WebDriver.logger
-    lgr.level = is_production? ? :error : :debug
+    lgr.level = is_production? ? :info : :debug
     lgr
   end
 end
@@ -37,7 +37,7 @@ def browser
 
 
     profile = Selenium::WebDriver::Firefox::Profile.new
-    profile['general.useragent.override'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0'
+    profile['general.useragent.override'] = 'Mozilla/5.0 (Android 5.0.1; Mobile; rv:58.0) Gecko/58.0 Firefox/58.0'
 
     options = Selenium::WebDriver::Firefox::Options.new
     options.profile = profile
