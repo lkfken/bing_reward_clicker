@@ -124,7 +124,7 @@ task :connect => ['.env', LOGGER_DIR, TMP_DIR] do
     counter += 1
     retry if counter < max_try
   end
-
+  File.open(TMP_DIR + "#{Time.now.to_s}.html", 'w') {|f| f.puts(browser.page_source)} unless is_production?
   logger.info "Logged in as #{user}"
 end
 
