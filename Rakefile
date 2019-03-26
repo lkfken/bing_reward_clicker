@@ -108,6 +108,7 @@ task :connect => ['.env', LOGGER_DIR, TMP_DIR] do
 
   logger.info 'Submit password...'
   browser.page_source.match(/Password/)
+  wait_for(10){browser.find_element(:id => 'idSIButton9')}
   browser.find_element(:id => 'i0118').send_key(password)
   browser.find_element(:id => 'idSIButton9').click
 
@@ -134,7 +135,11 @@ task :connect => ['.env', LOGGER_DIR, TMP_DIR] do
   end
 
   user = browser.find_element(:id => 'id_n').text.strip
-
+  if user.empty?
+    logger.error "No user found!"
+    browser.quit
+    abort
+  end
   logger.info "Logged in as #{user}"
 end
 
