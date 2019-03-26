@@ -22,7 +22,7 @@ def logger
   @logger ||= begin
     lgr = Selenium::WebDriver.logger
     lgr.level = is_production? ? :error : :debug
-    log_dev = is_production? ? File.join(LOGGER_DIR, 'run.log') : $stderr
+    log_dev = is_production? ? (LOGGER_DIR + 'run.log') : (LOGGER_DIR + "#{stage.to_s}.log")
     lgr.output = log_dev
     lgr
   end
