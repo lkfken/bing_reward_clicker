@@ -33,7 +33,7 @@ def browser
     unless is_production?
       driver = Selenium::WebDriver.for :firefox, :marionette => true
       original_agent = driver.execute_script("return navigator.userAgent")
-      logger.debug original_agent
+      logger.debug "Original Agent: #{original_agent}"
     end
 
 
