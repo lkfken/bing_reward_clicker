@@ -85,23 +85,6 @@ task :connect => ['.env', LOGGER_DIR, TMP_DIR] do
 
   # login
   logger.info 'Login...'
-  # xpath = "//div[contains(@class, 'mectrl_profilepic mectrl_glyph glyph_signIn_circle')]"
-  # # xpath = "//div[contains(@class, 'mectrl_signin mectrl_truncate') and text()='Sign in']"
-  # sign_in_link = {:xpath => xpath}
-  #
-  # begin
-  #   browser.find_element(sign_in_link).click
-  # rescue Selenium::WebDriver::Error::NoSuchElementError => ex
-  #   hostname = Socket.gethostbyname(Socket.gethostname).first
-  #   messages = [" Host : #{hostname}", ex.message]
-  #   if is_production?
-  #     Notification.deliver(recipient: ENV['recipient'], subject: 'bing_reward_clicker: Unable to locate sign in link', body: messages.join("\n"), logger: logger)
-  #   else
-  #     logger.error messages.join(' ')
-  #   end
-  #   raise ex.class, messages.join(' ')
-  # end
-
   logger.info 'Submit username...'
   browser.find_element(:id => 'i0116').send_key(username)
   browser.find_element(:id => 'idSIButton9').click
@@ -109,10 +92,12 @@ task :connect => ['.env', LOGGER_DIR, TMP_DIR] do
   logger.info 'Submit password...'
   browser.page_source.match(/Password/)
   wait_for(10) {browser.find_element(:id => 'idSIButton9')}
-  browser.find_element(:id => 'i0118').send_key(password)
+  browser.find_element(:id => 'idSIButton9').click
+  browser.find_element(:name => 'passwd').clear
+    browser.find_element(:name => 'passwd').send_key(password)
   sleep(10) unless is_production?
-  browser.save_screenshot(File.join(TMP_DIR, "pw_#{Time.now.to_s}.png")) unless is_production?
-  File.open(TMP_DIR + "pw_#{Time.now.to_s}.html", 'w') {|f| f.puts browser.page_source} unless is_production?
+  browser.save_screenshot(File.join(TMP_DIR, "pw_#{Time.now.strftime('%Y%m%d%H%M%S')}.png")) unless is_production?
+  File.open(TMP_DIR + "pw_#{Time.now.strftime('%Y%m%d%H%M%S')}.html", 'w') {|f| f.puts browser.page_source} unless is_production?
   browser.find_element(:id => 'idSIButton9').click
 
   sleep_duration = 1
