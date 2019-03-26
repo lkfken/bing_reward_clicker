@@ -29,21 +29,20 @@ end
 
 def browser
   @browser ||= begin
-    # unless is_production?
-    #   driver = Selenium::WebDriver.for :firefox, :marionette => true
-    #   original_agent = driver.execute_script("return navigator.userAgent")
-    #   logger.debug "Original Agent: #{original_agent}"
-    # end
-    #
-    # profile = Selenium::WebDriver::Firefox::Profile.new
-    # profile['general.useragent.override'] = 'Mozilla/5.0 (Android 5.0.1; Mobile; rv:58.0) Gecko/58.0 Firefox/58.0'
-    # profile['general.useragent.override'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' + 'AppleWebKit/537.36 (KHTML, like Gecko) ' + 'Chrome/64.0.3282.140 Safari/537.36 Edge/17.17134'
-    # options = Selenium::WebDriver::Firefox::Options.new
-    # options.profile = profile
-    #
-    # driver = Selenium::WebDriver.for :firefox, :marionette => true, :options => options
-    #
-    driver = Selenium::WebDriver.for :firefox, :marionette => true
+    unless is_production?
+      driver = Selenium::WebDriver.for :firefox, :marionette => true
+      original_agent = driver.execute_script("return navigator.userAgent")
+      logger.debug "Original Agent: #{original_agent}"
+    end
+
+    profile = Selenium::WebDriver::Firefox::Profile.new
+    profile['general.useragent.override'] = 'Mozilla/5.0 (Android 5.0.1; Mobile; rv:58.0) Gecko/58.0 Firefox/58.0'
+    profile['general.useragent.override'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' + 'AppleWebKit/537.36 (KHTML, like Gecko) ' + 'Chrome/64.0.3282.140 Safari/537.36 Edge/17.17134'
+    options = Selenium::WebDriver::Firefox::Options.new
+    options.profile = profile
+
+    driver = Selenium::WebDriver.for :firefox, :marionette => true, :options => options
+
     agent = driver.execute_script("return navigator.userAgent")
     logger.debug "Agent now: #{agent}"
     driver
