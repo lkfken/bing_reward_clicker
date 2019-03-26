@@ -85,6 +85,7 @@ task :connect => ['.env', LOGGER_DIR, TMP_DIR] do
   end
 
   logger.info 'Submit username...'
+  browser.find_element(:id => 'i0116').click
   browser.find_element(:id => 'i0116').send_key(username)
   browser.find_element(:id => 'idSIButton9').click
 
@@ -115,16 +116,8 @@ task :connect => ['.env', LOGGER_DIR, TMP_DIR] do
     raise ex
   end
 
-  counter = 0
-  begin
-    user = browser.find_element(:id => 'id_n').text.strip
-    raise if user.empty?
-  rescue => ex
-    sleep(3)
-    counter += 1
-    retry if counter < max_try
-  end
-  File.open(TMP_DIR + "#{Time.now.to_s}.html", 'w') {|f| f.puts(browser.page_source)} unless is_production?
+  user = browser.find_element(:id => 'id_n').text.strip
+
   logger.info "Logged in as #{user}"
 end
 
