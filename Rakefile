@@ -20,10 +20,9 @@ directory TMP_DIR
 
 def logger
   @logger ||= begin
-    lgr = Logger.new($stdout) #Selenium::WebDriver.logger
-    lgr.level = is_production? ? :error : :debug
     log_dev = is_production? ? (LOGGER_DIR + 'run.log') : (LOGGER_DIR + "#{stage.to_s}.log")
-    lgr.output = log_dev
+    lgr = Logger.new(log_dev) #Selenium::WebDriver.logger
+    lgr.level = is_production? ? :error : :debug
     lgr
   end
 end
