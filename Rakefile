@@ -85,12 +85,12 @@ task :connect => ['.env', LOGGER_DIR, TMP_DIR] do
   end
 
   logger.info 'Submit username...'
-  browser.find_element(:id => 'i0116').click
   browser.find_element(:id => 'i0116').send_key(username)
   browser.find_element(:id => 'idSIButton9').click
 
   logger.info 'Submit password...'
   browser.page_source.match(/Password/)
+  browser.find_element(:id => 'i0118').click
   browser.find_element(:id => 'i0118').send_key(password)
   browser.find_element(:id => 'idSIButton9').click
 
