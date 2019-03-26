@@ -116,10 +116,14 @@ task :connect => ['.env', LOGGER_DIR, TMP_DIR] do
   end
 
   user = ''
-  while user.empty?
+  begin
     user = browser.find_element(:id => 'id_n').text.strip
-    logger.debug "#{user.inspect}"
-    sleep(3) unless user
+  rescue Selenium::WebDriver::Error::NoSuchElementError => ex
+    sleep(3)
+    browser.save_screenshot(File.join(TMP_DIR, "#{Time.now.to_s}.png"))
+    logger.error user.inspect
+    retry if counter < max_try
+    raise ex
   end
 
   logger.info "Logged in as #{user}"
