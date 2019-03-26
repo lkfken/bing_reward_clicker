@@ -7,7 +7,7 @@ require_relative 'lib/notification'
 
 DASHBOARD_URL = 'https://account.microsoft.com/rewards/dashboard'
 BING_URL = 'http://www.bing.com'
-TOTAL_SEARCH = 34
+TOTAL_SEARCH = 12
 
 ROOT_DIR = Pathname.new(File.dirname(__FILE__))
 CONFIG_DIR = ROOT_DIR + 'config'
@@ -20,15 +20,31 @@ directory TMP_DIR
 
 def logger
   @logger ||= begin
+    lgr = Selenium::WebDriver.logger
+    lgr.level = is_production? ? :error : :debug
     log_dev = is_production? ? File.join(LOGGER_DIR, 'run.log') : $stderr
-    log = Logger.new(log_dev, shift_age = 7, shift_size = 1048576)
-    log.level = is_production? ? Logger::INFO : Logger::DEBUG
-    log
+    lgr.output = log_dev
+    lgr
   end
 end
 
 def browser
-  @browser ||= Selenium::WebDriver.for :firefox, :marionette => true
+  @browser ||= begin
+    unless is_production?
+      driver = Selenium::WebDriver.for :firefox, :marionette => true
+      original_agent = driver.execute_script("return navigator.userAgent")
+      logger.debug original_agent
+    end
+
+
+    profile = Selenium::WebDriver::Firefox::Profile.new
+    profile['general.useragent.override'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0'
+
+    options = Selenium::WebDriver::Firefox::Options.new
+    options.profile = profile
+
+    Selenium::WebDriver.for :firefox, :marionette => true, :options => options
+  end
 end
 
 def stage
@@ -90,7 +106,6 @@ task :connect => ['.env', LOGGER_DIR, TMP_DIR] do
 
   logger.info 'Submit password...'
   browser.page_source.match(/Password/)
-  browser.find_element(:id => 'i0118').click
   browser.find_element(:id => 'i0118').send_key(password)
   browser.find_element(:id => 'idSIButton9').click
 
