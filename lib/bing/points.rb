@@ -9,7 +9,7 @@ module Bing
 
     def available_points
       begin
-        @browser.navigate.to REWARD_URL
+        @browser.jump_to REWARD_URL
       rescue Selenium::WebDriver::Error::UnexpectedAlertOpenError => ex
       end
       sleep(5) # wait for animation to end
