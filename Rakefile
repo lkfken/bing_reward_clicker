@@ -19,6 +19,8 @@ directory CONFIG_DIR
 directory LOGGER_DIR
 directory TMP_DIR
 
+task :default => [:get_bing_points]
+
 desc 'get some bing points'
 task :get_bing_points do
   [:pc, :mobile].each {|mode| Application.run(mode: mode, logger: logger)}
