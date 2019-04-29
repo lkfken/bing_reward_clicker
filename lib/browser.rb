@@ -2,7 +2,7 @@ require 'forwardable'
 
 class Browser
   extend Forwardable
-  def_delegators :@driver, :navigate, :find_element
+  def_delegators :@driver, :navigate, :find_element, :find_elements
   class InvalidModeError < StandardError;
   end
 
