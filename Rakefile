@@ -19,7 +19,7 @@ directory CONFIG_DIR
 directory LOGGER_DIR
 directory TMP_DIR
 
-task :default => [:bing_search]
+task :default => [:show_points]
 
 desc 'show Bing points'
 task :show_points do
