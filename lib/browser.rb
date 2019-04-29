@@ -19,7 +19,10 @@ class Browser < DelegateClass(Selenium::WebDriver::Firefox::Driver)
     profile['general.useragent.override'] = user_agent
     options = Selenium::WebDriver::Firefox::Options.new
     options.profile = profile
-    options.headless! if defined? Headless
+    if defined? Headless
+      options.headless!
+      logger.info 'headless mode enabled'
+    end
 
     @driver = Selenium::WebDriver::Firefox::Driver.new(:marionette => true, :options => options)
     super(@driver)
