@@ -1,7 +1,7 @@
 require 'bundler'
 Bundler.require
 Dotenv.load!
-require 'logger'
+
 require 'yaml'
 require 'pp'
 
@@ -19,18 +19,9 @@ directory CONFIG_DIR
 directory LOGGER_DIR
 directory TMP_DIR
 
-def logger
-  @logger ||= begin
-    log_dev = Application.is_production? ? (LOGGER_DIR + 'run.log') : (LOGGER_DIR + "#{stage.to_s}.log")
-    lgr = Logger.new(log_dev) #Selenium::WebDriver.logger
-    lgr.level = Application.is_production? ? :info : :debug
-    lgr
-  end
-end
-
 desc 'get some bing points'
 task :get_bing_points do
-  [:pc, :mobile].each {|mode| Application.run(mode: mode)}
+  [:pc, :mobile].each {|mode| Application.run(mode: mode, logger: logger)}
 end
 
 desc 'test browser'

@@ -1,4 +1,15 @@
+require 'logger'
+
 class Application
+  def self.logger
+    @logger ||= begin
+      log_dev = is_production? ? (LOGGER_DIR + 'run.log') : (LOGGER_DIR + "#{stage.to_s}.log")
+      lgr = Logger.new(log_dev) #Selenium::WebDriver.logger
+      lgr.level = is_production? ? :info : :debug
+      lgr
+    end
+  end
+
   def self.is_production?
     stage == :production
   end
@@ -30,7 +41,7 @@ class Application
 
   end
 
-  def self.run(mode: )
+  def self.run(mode:, logger:)
     browser = Browser.new(mode: mode, logger: logger)
     total = browser.pc_mode? ? pc_total : mobile_total
 
