@@ -6,11 +6,12 @@ class Browser
   PC_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' + 'AppleWebKit/537.36 (KHTML, like Gecko) ' + 'Chrome/64.0.3282.140 Safari/537.36 Edge/17.17134'
   VALID_MODES = [:pc, :mobile]
 
-  attr_reader :mode, :logger
+  attr_reader :mode, :logger, :headless_mode
 
-  def initialize(mode: :pc, logger: Logger.new($stdout))
+  def initialize(mode: :pc, logger: Logger.new($stdout), headless_mode: (defined?(Headless)))
     raise(InvalidModeError, "#{mode} is not a valid mode") unless VALID_MODES.include?(mode)
     @mode = mode
+    @headless_mode = headless_mode
     logger.info "#{mode} mode"
     @logger = logger
 
@@ -20,7 +21,7 @@ class Browser
     options = Selenium::WebDriver::Firefox::Options.new
     options.profile = profile
 
-    if defined? Headless
+    if headless_mode
       options.headless!
       logger.info 'headless mode enabled'
       start_headless
@@ -45,7 +46,7 @@ class Browser
   end
 
   def quit
-    quit_headless
+    quit_headless if headless_mode
     @driver.quit
   rescue Selenium::WebDriver::Error::UnknownError => ex
     logger.error ex.message
@@ -69,10 +70,8 @@ class Browser
   end
 
   def quit_headless
-    if @headless
       @headless.destroy
       logger.debug 'Destroy headless'
-    end
   end
 
   def current_agent
@@ -89,6 +88,4 @@ class Browser
       MOBILE_AGENT
     end
   end
-
-
 end
