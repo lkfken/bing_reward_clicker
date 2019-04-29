@@ -19,6 +19,8 @@ class Application
 
   def self.run(mode: )
     browser = Browser.new(mode: mode, logger: logger)
+    total = browser.pc_mode? ? 0 : 1
+
     browser.start_headless if defined? Headless
 
     if Application.is_production?
@@ -29,7 +31,6 @@ class Application
       logger.info points.points_detail.inspect
     end
 
-    total = browser.pc_mode? ? 30 : 20
     topics = Bing::Topics.new(total: total, keywords: YAML::load_file('./config/topics.yml'))
     search = Bing::Search.new
     topics.each do |topic|
