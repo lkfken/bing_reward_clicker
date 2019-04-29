@@ -85,7 +85,8 @@ task :get_bing_points do
     logger.debug points.points_detail.inspect
   end
 
-  topics = Bing::Topics.new(total: 30, keywords: YAML::load_file('./config/topics.yml'))
+  total = browser.pc_mode? ? 30 : 20
+  topics = Bing::Topics.new(total: total, keywords: YAML::load_file('./config/topics.yml'))
   search = Bing::Search.new
   topics.each do |topic|
     search.topic = topic
