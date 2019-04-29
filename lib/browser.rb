@@ -72,7 +72,7 @@ class Browser
   private
 
   def capture_error
-    filename = File.join(screen_capture_dir, Time.now.strftime('%Y%m%d%H%M%S') + member_id.to_s)
+    filename = File.join(screen_capture_dir, "error_#{Time.now.strftime('%Y%m%d%H%M%S')}")
     @driver.screen_print(:png, filename: filename)
     logger.error "screen print saved to #{filename}"
     filename
