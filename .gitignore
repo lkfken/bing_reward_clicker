@@ -89,4 +89,5 @@ log/
 Gemfile.lock
 .env
 .ruby-version
+.rake_tasks~
 tmp/
