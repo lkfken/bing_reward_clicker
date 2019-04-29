@@ -1,6 +1,4 @@
-require 'delegate'
-
-class Browser < DelegateClass(Selenium::WebDriver::Firefox::Driver)
+class Browser
   class InvalidModeError < StandardError;
   end
 
@@ -18,23 +16,25 @@ class Browser < DelegateClass(Selenium::WebDriver::Firefox::Driver)
 
     profile = Selenium::WebDriver::Firefox::Profile.new
     profile['general.useragent.override'] = user_agent
+
     options = Selenium::WebDriver::Firefox::Options.new
     options.profile = profile
+
     if defined? Headless
       options.headless!
       logger.info 'headless mode enabled'
       start_headless
     end
+
     capabilities = Selenium::WebDriver::Remote::Capabilities.firefox(marionette: true)
     capabilities['firefoxBinary'] = '/usr/bin/geckodriver'
     capabilities['acceptInsecureCerts'] = true
-    # @driver = Selenium::WebDriver::Firefox::Driver.new(:marionette => true, desired_capabilities: capabilities, :options => options)
+
     @driver = Selenium::WebDriver.for(:firefox, :desired_capabilities => capabilities, :options => options)
-    super(@driver)
   end
 
   def jump_to(url)
-    navigate.to url
+    @driver.navigate.to url
     logger.debug "navigate to #{url}"
   rescue Selenium::WebDriver::Error::UnexpectedAlertOpenError => ex
     logger.error ex.message
