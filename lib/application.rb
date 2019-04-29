@@ -18,11 +18,16 @@ class Application
   end
 
   def self.mobile_total
-    ENV['mobile_total'].to_i
+    str = ENV['mobile_total']
+    raise "please config your .env file" if str.nil?
+    str.to_i
   end
 
   def self.pc_total
-    ENV['pc_total'].to_i
+    str = ENV['pc_total'].to_i
+    raise "please config your .env file" if str.nil?
+    str.to_i
+
   end
 
   def self.run(mode: )
