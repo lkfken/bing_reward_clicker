@@ -19,6 +19,7 @@ class Browser < DelegateClass(Selenium::WebDriver::Firefox::Driver)
     profile['general.useragent.override'] = user_agent
     options = Selenium::WebDriver::Firefox::Options.new
     options.profile = profile
+    options.headless! if defined? Headless
 
     @driver = Selenium::WebDriver::Firefox::Driver.new(:marionette => true, :options => options)
     super(@driver)
@@ -56,6 +57,14 @@ class Browser < DelegateClass(Selenium::WebDriver::Firefox::Driver)
     end
   end
 
+  def pc_mode?
+    mode == :pc
+  end
+
+  def mobile_mode?
+    mode == :mobile
+  end
+
   private
 
   def current_agent
@@ -73,11 +82,5 @@ class Browser < DelegateClass(Selenium::WebDriver::Firefox::Driver)
     end
   end
 
-  def pc_mode?
-    mode == :pc
-  end
 
-  def mobile_mode?
-    mode == :mobile
-  end
 end
