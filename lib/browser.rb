@@ -74,6 +74,7 @@ class Browser
   def capture_error
     filename = File.join(screen_capture_dir, Time.now.strftime('%Y%m%d%H%M%S') + member_id.to_s)
     @driver.screen_print(:png, filename: filename)
+    logger.error "screen print saved to #{filename}"
     filename
   end
   def start_headless
