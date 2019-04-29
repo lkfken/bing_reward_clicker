@@ -25,6 +25,8 @@ class Browser < DelegateClass(Selenium::WebDriver::Firefox::Driver)
       logger.info 'headless mode enabled'
     end
     capabilities = Selenium::WebDriver::Remote::Capabilities.firefox(marionette: true)
+    capabilities['firefoxBinary'] = '/usr/bin/geckodriver'
+    capabilities['acceptInsecureCerts'] = true
     @driver = Selenium::WebDriver::Firefox::Driver.new(:marionette => true, desired_capabilities: capabilities, :options => options)
     super(@driver)
   end
