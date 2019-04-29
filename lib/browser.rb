@@ -10,12 +10,13 @@ class Browser
   PC_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' + 'AppleWebKit/537.36 (KHTML, like Gecko) ' + 'Chrome/64.0.3282.140 Safari/537.36 Edge/17.17134'
   VALID_MODES = [:pc, :mobile]
 
-  attr_reader :mode, :logger, :headless_mode
+  attr_reader :mode, :logger, :headless_mode, :screen_capture_dir
 
-  def initialize(mode: :pc, logger: Logger.new($stdout), headless_mode: (defined?(Headless)))
+  def initialize(mode: :pc, logger: Logger.new($stdout), headless_mode: (defined?(Headless)), screen_capture_dir: './tmp')
     raise(InvalidModeError, "#{mode} is not a valid mode") unless VALID_MODES.include?(mode)
     @mode = mode
     @headless_mode = headless_mode
+    @screen_capture_dir = screen_capture_dir
     logger.info "#{mode} mode"
     @logger = logger
 
@@ -47,6 +48,10 @@ class Browser
 
   def wait_for(seconds)
     Selenium::WebDriver::Wait.new(timeout: seconds).until {yield}
+  rescue Selenium::WebDriver::Error::TimeoutError => ex
+    logger.error ex.message
+    capture_error
+    raise ex
   end
 
   def quit
@@ -66,6 +71,11 @@ class Browser
 
   private
 
+  def capture_error
+    filename = File.join(screen_capture_dir, Time.now.strftime('%Y%m%d%H%M%S') + member_id.to_s)
+    @driver.screen_print(:png, filename: filename)
+    filename
+  end
   def start_headless
     @headless = Headless.new
     @headless.start
