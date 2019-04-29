@@ -27,8 +27,6 @@ end
 desc 'test browser'
 task :test_browser do
   logger = Logger.new($stdout)
-  options = Selenium::WebDriver::Firefox::Options.new
-  options.headless! if defined? Headless
   browser = Browser.new(logger: logger)
   logger.debug 'browser started'
   browser.quit
