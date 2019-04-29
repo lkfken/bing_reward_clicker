@@ -46,7 +46,7 @@ class Browser
 
   def quit
     quit_headless
-    super
+    @browser.quit
   end
 
   def pc_mode?
