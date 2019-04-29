@@ -42,8 +42,8 @@ class Application
   end
 
   def self.show_points(logger: Logger.new($stdout), screen_capture_dir: )
-    browser = Browser.new(logger: logger)
-    login = Bing::Login.new(browser: browser, username: Application.user, password: Application.password, logger: logger, screen_capture_dir: screen_capture_dir)
+    browser = Browser.new(logger: logger, screen_capture_dir: screen_capture_dir)
+    login = Bing::Login.new(browser: browser, username: Application.user, password: Application.password, logger: logger)
     login.run
     points = Bing::Points.new(browser: browser)
     logger.info "Available: #{points.available_points}"
