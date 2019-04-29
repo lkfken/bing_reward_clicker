@@ -41,6 +41,15 @@ class Application
 
   end
 
+  def self.show_points(logger: Logger.new($stdout))
+    browser = Browser.new(logger: logger)
+    login = Bing::Login.new(browser: browser, username: Application.user, password: Application.password, logger: logger)
+    login.run
+    points = Bing::Points.new(browser: browser)
+    logger.info "Available: #{points.available_points}"
+    logger.info points.points_detail.inspect
+  end
+
   def self.run(mode:, logger:)
     browser = Browser.new(mode: mode, logger: logger)
     total = browser.pc_mode? ? pc_total : mobile_total

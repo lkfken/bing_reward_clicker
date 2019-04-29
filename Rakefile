@@ -21,7 +21,12 @@ directory TMP_DIR
 
 task :default => [:get_bing_points]
 
-desc 'get some bing points'
+desc 'show Bing points'
+task :show_points do
+  Application.show_points
+end
+
+desc 'get some Bing points'
 task :get_bing_points do
   [:pc, :mobile].each {|mode| Application.run(mode: mode, logger: logger)}
 end
