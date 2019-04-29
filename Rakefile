@@ -30,9 +30,7 @@ end
 
 desc 'get some bing points'
 task :get_bing_points do
-  [:pc, :mobile].each do |mode|
-    Application.run(mode: mode)
-  end
+  [:pc, :mobile].each {|mode| Application.run(mode: mode)}
 end
 
 desc 'test browser'
@@ -40,21 +38,8 @@ task :test_browser do
   logger = Logger.new($stdout)
   options = Selenium::WebDriver::Firefox::Options.new
   options.headless! if defined? Headless
-  #browser = Selenium::WebDriver.for :firefox, options: options
   browser = Browser.new(logger: logger)
   logger.debug 'browser started'
-
-  # if defined? Headless
-  #   headless = Headless.new
-  #   headless.start
-  #   logger.debug 'headless started'
-  # end
-  #
-  # if headless
-  #   headless.destroy
-  #   logger.debug 'headless destroyed'
-  # end
-
   browser.quit
   logger.debug 'browser quited'
 end
