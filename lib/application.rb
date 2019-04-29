@@ -17,9 +17,17 @@ class Application
     ENV['bing_password']
   end
 
+  def self.mobile_total
+    ENV['mobile_total'].to_i
+  end
+
+  def self.pc_total
+    ENV['pc_total'].to_i
+  end
+
   def self.run(mode: )
     browser = Browser.new(mode: mode, logger: logger)
-    total = browser.pc_mode? ? 0 : 1
+    total = browser.pc_mode? ? pc_total : mobile_total
 
     browser.start_headless if defined? Headless
 

@@ -13,6 +13,7 @@ class Browser < DelegateClass(Selenium::WebDriver::Firefox::Driver)
   def initialize(mode: :pc, logger: Logger.new($stdout))
     raise(InvalidModeError, "#{mode} is not a valid mode") unless VALID_MODES.include?(mode)
     @mode = mode
+    logger.info "#{mode} mode"
     @logger = logger
 
     profile = Selenium::WebDriver::Firefox::Profile.new
@@ -23,8 +24,8 @@ class Browser < DelegateClass(Selenium::WebDriver::Firefox::Driver)
       options.headless!
       logger.info 'headless mode enabled'
     end
-
-    @driver = Selenium::WebDriver::Firefox::Driver.new(:marionette => true, :options => options)
+    capabilities = Selenium::WebDriver::Remote::Capabilities.firefox(marionette: true)
+    @driver = Selenium::WebDriver::Firefox::Driver.new(:marionette => true, desired_capabilities: capabilities, :options => options)
     super(@driver)
   end
 
