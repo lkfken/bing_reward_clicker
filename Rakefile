@@ -30,30 +30,7 @@ end
 
 desc 'get some bing points'
 task :get_bing_points do
-  browser = Browser.new(mode: :mobile, logger: logger)
-  browser.start_headless if defined? Headless
-
-  if Application.is_production?
-    login = Bing::Login.new(browser: browser, username: Application.user, password: Application.password, logger: logger)
-    login.run
-    points = Bing::Points.new(browser: browser)
-    logger.info "Available: #{points.available_points}"
-    logger.info points.points_detail.inspect
+  [:pc, :mobile].each do |mode|
+    Application.run(mode: mode)
   end
-
-  total = browser.pc_mode? ? 30 : 20
-  topics = Bing::Topics.new(total: total, keywords: YAML::load_file('./config/topics.yml'))
-  search = Bing::Search.new
-  topics.each do |topic|
-    search.topic = topic
-    browser.jump_to search.url
-    sleep(rand(1..5)) if Application.is_production?
-  end
-
-  if login && points
-    logger.info "Available: #{points.available_points}"
-    logger.info points.points_detail.inspect
-  end
-
-  browser.quit
 end
