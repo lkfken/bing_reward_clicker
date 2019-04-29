@@ -48,6 +48,7 @@ class Application
     points = Bing::Points.new(browser: browser)
     logger.info "Available: #{points.available_points}"
     logger.info points.points_detail.inspect
+    browser.quit
   end
 
   def self.run(mode:, logger:)
