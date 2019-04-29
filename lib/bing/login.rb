@@ -18,6 +18,7 @@ module Bing
       @browser.wait_for(10) {@browser.find_element(:name => 'passwd')}
       @browser.find_element(:name => 'passwd').send_key(Selenium::WebDriver::Keys[:return])
       @browser.find_element(:name => 'passwd').clear
+      sleep(3)
       @browser.find_element(:name => 'passwd').send_key(@password)
       @browser.find_element(:name => 'passwd').send_key(Selenium::WebDriver::Keys[:return])
 

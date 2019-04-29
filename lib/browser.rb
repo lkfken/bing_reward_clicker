@@ -50,7 +50,7 @@ class Browser
     Selenium::WebDriver::Wait.new(timeout: seconds).until {yield}
   rescue Selenium::WebDriver::Error::TimeoutError => ex
     logger.error ex.message
-    capture_error
+    screen_print
     raise ex
   end
 
@@ -69,14 +69,15 @@ class Browser
     mode == :mobile
   end
 
-  private
-
-  def capture_error
-    filename = File.join(screen_capture_dir, "error_#{Time.now.strftime('%Y%m%d%H%M%S')}.png")
+  def screen_print(filename: "screen_print_#{Time.now.strftime('%Y%m%d%H%M%S')}.png")
+    filename = File.join(screen_capture_dir, filename)
     @driver.save_screenshot(filename)
     logger.error "screen print saved to #{filename}"
     filename
   end
+
+  private
+
   def start_headless
     @headless = Headless.new
     @headless.start
