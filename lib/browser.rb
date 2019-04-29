@@ -23,6 +23,7 @@ class Browser < DelegateClass(Selenium::WebDriver::Firefox::Driver)
     if defined? Headless
       options.headless!
       logger.info 'headless mode enabled'
+      start_headless
     end
     capabilities = Selenium::WebDriver::Remote::Capabilities.firefox(marionette: true)
     capabilities['firefoxBinary'] = '/usr/bin/geckodriver'
@@ -39,31 +40,13 @@ class Browser < DelegateClass(Selenium::WebDriver::Firefox::Driver)
     logger.error ex.message
   end
 
-  def self.for(*args)
-    self.new(*args)
-  end
-
   def wait_for(seconds)
     Selenium::WebDriver::Wait.new(timeout: seconds).until {yield}
-  end
-
-  def start_headless
-    @headless = Headless.new
-    @headless.start
-    logger.debug 'Start headless'
-    @headless
   end
 
   def quit
     quit_headless
     super
-  end
-
-  def quit_headless
-    if @headless
-      @headless.destroy
-      logger.debug 'Destroy headless'
-    end
   end
 
   def pc_mode?
@@ -75,6 +58,20 @@ class Browser < DelegateClass(Selenium::WebDriver::Firefox::Driver)
   end
 
   private
+
+  def start_headless
+    @headless = Headless.new
+    @headless.start
+    logger.debug 'Start headless'
+    @headless
+  end
+
+  def quit_headless
+    if @headless
+      @headless.destroy
+      logger.debug 'Destroy headless'
+    end
+  end
 
   def current_agent
     @driver.execute_script("return navigator.userAgent")

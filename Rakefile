@@ -40,19 +40,20 @@ task :test_browser do
   logger = Logger.new($stdout)
   options = Selenium::WebDriver::Firefox::Options.new
   options.headless! if defined? Headless
-  browser = Selenium::WebDriver.for :firefox, options: options
+  #browser = Selenium::WebDriver.for :firefox, options: options
+  browser = Browser.new(logger: logger)
   logger.debug 'browser started'
 
-  if defined? Headless
-    headless = Headless.new
-    headless.start
-    logger.debug 'headless started'
-  end
-
-  if headless
-    headless.destroy
-    logger.debug 'headless destroyed'
-  end
+  # if defined? Headless
+  #   headless = Headless.new
+  #   headless.start
+  #   logger.debug 'headless started'
+  # end
+  #
+  # if headless
+  #   headless.destroy
+  #   logger.debug 'headless destroyed'
+  # end
 
   browser.quit
   logger.debug 'browser quited'
