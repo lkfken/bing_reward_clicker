@@ -1,5 +1,5 @@
 job_type :rbenv_rake, %Q{export PATH=$HOME/.rbenv/bin:$PATH; eval "$(rbenv init -)"; cd :path && bundle exec rake :task --silent :output }
 
 every :day, :at => '8:15am' do
-  rbenv_rake 'run', :output => { :error => './log/error.log', :standard => './log/cron.log'}
+  rbenv_rake 'default', :output => { :error => './log/error.log', :standard => './log/cron.log'}
 end
