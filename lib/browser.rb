@@ -47,6 +47,8 @@ class Browser
   def quit
     quit_headless
     @driver.quit
+  rescue Selenium::WebDriver::Error::UnknownError => ex
+    logger.error ex.message
   end
 
   def pc_mode?
