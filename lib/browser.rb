@@ -41,6 +41,7 @@ class Browser
 
   def jump_to(url)
     @driver.navigate.to url
+    sleep(5)
     logger.debug "navigate to #{url}"
   rescue Selenium::WebDriver::Error::UnexpectedAlertOpenError => ex
     logger.error ex.message
