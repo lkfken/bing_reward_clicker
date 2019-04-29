@@ -23,7 +23,7 @@ task :default => [:get_bing_points]
 
 desc 'show Bing points'
 task :show_points do
-  Application.show_points
+  Application.show_points(screen_capture_dir: TMP_DIR)
 end
 
 desc 'get some Bing points'
