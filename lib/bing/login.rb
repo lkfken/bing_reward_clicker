@@ -1,5 +1,6 @@
 module Bing
   class Login
+    include Bing
     URL = 'https://login.live.com/'
 
     def initialize(browser:, username:, password:, logger: Logger.new($stdout))

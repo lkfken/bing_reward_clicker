@@ -5,4 +5,7 @@ require_relative 'bing/search'
 require_relative 'bing/topics'
 
 module Bing
+  def wait_for(seconds)
+    Selenium::WebDriver::Wait.new(timeout: seconds).until {yield}
+  end
 end

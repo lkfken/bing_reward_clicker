@@ -28,6 +28,8 @@ class Browser < DelegateClass(Selenium::WebDriver::Firefox::Driver)
   def jump_to(url)
     navigate.to url
     logger.debug "navigate to #{url}"
+  rescue Selenium::WebDriver::Error::UnexpectedAlertOpenError => ex
+    logger.error ex.message
   end
 
   def self.for(*args)
