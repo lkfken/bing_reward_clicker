@@ -9,7 +9,7 @@ module Bing
 
     def available_points
       begin
-        @browser.jump_to REWARD_URL
+        @browser.jump_to REWARD_URL, pause: 0
       rescue Selenium::WebDriver::Error::UnexpectedAlertOpenError => ex
       end
       element = @browser.wait_for(10) {@browser.find_element(:class => 'title-detail')}
@@ -17,7 +17,7 @@ module Bing
     end
 
     def points_detail
-      @browser.jump_to POINTS_DETAIL_URL
+      @browser.jump_to POINTS_DETAIL_URL, pause: 5
       buckets = @browser.wait_for(10) {@browser.find_elements(:xpath => "//p[contains(@class, 'pointsDetail c-subheading-3 ng-binding')]")}
       edge_bonus, pc_search, mobile_search = buckets.map(&:text)
       {edge_bonus: edge_bonus, pc_search: pc_search, mobile_search: mobile_search}

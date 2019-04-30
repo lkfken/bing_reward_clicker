@@ -4,11 +4,11 @@ module Bing
 
     def initialize(total:, keywords:)
       @total = total
-      @keywords = keywords
+      @keywords = keywords.uniq
     end
 
     def sample
-      @sample ||= @keywords.uniq.sample(@total)
+      @keywords.sample(@total)
     end
 
     def size

@@ -2,12 +2,10 @@ require 'logger'
 
 class Application
   def self.logger
-    @logger ||= begin
       log_dev = is_production? ? (LOGGER_DIR + 'run.log') : (LOGGER_DIR + "#{stage.to_s}.log")
       lgr = Logger.new(log_dev) #Selenium::WebDriver.logger
       lgr.level = is_production? ? :info : :debug
       lgr
-    end
   end
 
   def self.is_production?
@@ -38,44 +36,38 @@ class Application
     str = ENV['pc_total'].to_i
     raise "please config your .env file" if str.nil?
     str.to_i
-
   end
 
-  def self.show_points(logger: Logger.new($stdout), screen_capture_dir: )
-    browser = Browser.new(logger: logger, screen_capture_dir: screen_capture_dir)
-    login = Bing::Login.new(browser: browser, username: Application.user, password: Application.password, logger: logger)
-    login.run
+  def self.browser(screen_capture_dir:, mode:, logger:)
+    Browser.new(screen_capture_dir: screen_capture_dir, mode: mode, logger: logger)
+  end
+
+  def self.show_points(browser:, logger: Logger.new($stdout))
+    if !browser.login?
+      login = Bing::Login.new(browser: browser, username: Application.user, password: Application.password)
+      login.run
+    end
     points = Bing::Points.new(browser: browser)
     logger.info "Available: #{points.available_points}"
     logger.info points.points_detail.inspect
-    browser.quit
   end
 
-  def self.run(mode:, logger:, keywords: [])
-    browser = Browser.new(mode: mode, logger: logger)
+  def self.bing_search(browser:, logger:, keywords: [])
     total = browser.pc_mode? ? pc_total : mobile_total
 
-    if Application.is_production?
-      login = Bing::Login.new(browser: browser, username: Application.user, password: Application.password, logger: logger)
+    if Application.is_production? && !browser.login?
+      login = Bing::Login.new(browser: browser, username: Application.user, password: Application.password)
       login.run
-      points = Bing::Points.new(browser: browser)
-      logger.info "Available: #{points.available_points}"
-      logger.info points.points_detail.inspect
     end
 
     topics = Bing::Topics.new(total: total, keywords: keywords)
+    logger.debug "total topics: #{topics.size}"
+
     search = Bing::Search.new
     topics.each do |topic|
       search.topic = topic
-      browser.jump_to search.url
+      browser.jump_to search.url, pause: 0
       sleep(rand(1..5)) if Application.is_production?
     end
-
-    if login && points
-      logger.info "Available: #{points.available_points}"
-      logger.info points.points_detail.inspect
-    end
-
-    browser.quit
   end
 end

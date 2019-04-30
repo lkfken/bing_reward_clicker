@@ -23,12 +23,24 @@ task :default => [:show_points]
 
 desc 'show Bing points'
 task :show_points do
-  Application.show_points(screen_capture_dir: TMP_DIR)
+  browser = Application.browser(screen_capture_dir: TMP_DIR, mode: :mobile, logger: Logger.new($stdout))
+  Application.show_points(browser: browser)
+  browser.quit
 end
 
 desc 'get some Bing points'
 task :bing_search do
-  [:pc, :mobile].each {|mode| Application.run(mode: mode, logger: Application.logger, keywords: YAML::load_file(CONFIG_DIR + 'topics.yml'))}
+  keywords = YAML::load_file(CONFIG_DIR + 'topics.yml')
+  keywords = keywords.first(10)
+  modes = [:pc, :mobile]
+  logger = Logger.new($stdout) #Application.logger
+  modes.each do |mode|
+    browser = Application.browser(screen_capture_dir: TMP_DIR, mode: mode, logger: logger)
+    Application.show_points(browser: browser, logger: logger) if mode == modes.first
+    Application.bing_search(browser: browser, logger: logger, keywords: keywords)
+    Application.show_points(browser: browser, logger: logger) if mode == modes.last
+    browser.quit
+  end
 end
 
 desc 'test browser'

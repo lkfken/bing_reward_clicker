@@ -11,37 +11,22 @@ class Browser
   VALID_MODES = [:pc, :mobile]
 
   attr_reader :mode, :logger, :headless_mode, :screen_capture_dir
+  attr_accessor :logged_in
 
   def initialize(mode: :pc, logger: Logger.new($stdout), headless_mode: (defined?(Headless)), screen_capture_dir: './tmp')
     raise(InvalidModeError, "#{mode} is not a valid mode") unless VALID_MODES.include?(mode)
+
     @mode = mode
     @headless_mode = headless_mode
     @screen_capture_dir = screen_capture_dir
-    logger.info "#{mode} mode"
     @logger = logger
-
-    profile = Selenium::WebDriver::Firefox::Profile.new
-    profile['general.useragent.override'] = user_agent
-
-    options = Selenium::WebDriver::Firefox::Options.new
-    options.profile = profile
-
-    if headless_mode
-      options.headless!
-      logger.info 'headless mode enabled'
-      start_headless
-    end
-
-    capabilities = Selenium::WebDriver::Remote::Capabilities.firefox(marionette: true)
-    capabilities['firefoxBinary'] = '/usr/bin/geckodriver'
-    capabilities['acceptInsecureCerts'] = true
-
+    @logged_in = false
     @driver = Selenium::WebDriver.for(:firefox, :desired_capabilities => capabilities, :options => options)
   end
 
-  def jump_to(url)
+  def jump_to(url, pause: 0)
     @driver.navigate.to url
-    sleep(5)
+    sleep(pause)
     logger.debug "navigate to #{url}"
   rescue Selenium::WebDriver::Error::UnexpectedAlertOpenError => ex
     logger.error ex.message
@@ -70,6 +55,10 @@ class Browser
     mode == :mobile
   end
 
+  def login?
+    logged_in
+  end
+
   def screen_print(filename: "screen_print_#{Time.now.strftime('%Y%m%d%H%M%S')}.png")
     filename = File.join(screen_capture_dir, filename)
     @driver.save_screenshot(filename)
@@ -78,6 +67,36 @@ class Browser
   end
 
   private
+
+  def profile
+    @profile ||= begin
+      _profile = Selenium::WebDriver::Firefox::Profile.new
+      _profile['general.useragent.override'] = user_agent
+      _profile
+    end
+  end
+
+  def options
+    @options ||= begin
+      _options = Selenium::WebDriver::Firefox::Options.new
+      _options.profile = profile
+      if headless_mode
+        options.headless!
+        logger.info 'headless mode enabled'
+        start_headless
+      end
+      _options
+    end
+  end
+
+  def capabilities
+    @capabilities ||= begin
+      _capabilities = Selenium::WebDriver::Remote::Capabilities.firefox(marionette: true)
+      _capabilities['firefoxBinary'] = '/usr/bin/geckodriver'
+      _capabilities['acceptInsecureCerts'] = true
+      _capabilities
+    end
+  end
 
   def start_headless
     @headless = Headless.new

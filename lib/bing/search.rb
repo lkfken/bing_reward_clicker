@@ -10,7 +10,7 @@ module Bing
 
     def url
       raise(MissingTermError, 'no term defined!') unless topic
-      URI(Search::URI + '/search' + "?q=" + ::URI.escape(topic))
+      URI(Search::URI + '/news' + "?q=" + ::URI.escape(topic) + '&qft=interval%3d"8"')
     end
 
   end
