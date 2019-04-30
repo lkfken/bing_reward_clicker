@@ -42,7 +42,8 @@ class Application
     Browser.new(screen_capture_dir: screen_capture_dir, mode: mode, logger: logger)
   end
 
-  def self.show_points(browser:, logger: Logger.new($stdout))
+  def self.show_points(browser:)
+    logger = browser.logger
     if !browser.login?
       login = Bing::Login.new(browser: browser, username: Application.user, password: Application.password)
       login.run
@@ -52,9 +53,9 @@ class Application
     logger.info points.points_detail.inspect
   end
 
-  def self.bing_search(browser:, logger:, keywords: [])
+  def self.bing_search(browser:, keywords: [])
     total = browser.pc_mode? ? pc_total : mobile_total
-
+    logger = browser.logger
     if Application.is_production? && !browser.login?
       login = Bing::Login.new(browser: browser, username: Application.user, password: Application.password)
       login.run
