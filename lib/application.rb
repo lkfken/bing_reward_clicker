@@ -51,7 +51,7 @@ class Application
     browser.quit
   end
 
-  def self.run(mode:, logger:)
+  def self.run(mode:, logger:, keywords: [])
     browser = Browser.new(mode: mode, logger: logger)
     total = browser.pc_mode? ? pc_total : mobile_total
 
@@ -63,7 +63,7 @@ class Application
       logger.info points.points_detail.inspect
     end
 
-    topics = Bing::Topics.new(total: total, keywords: YAML::load_file('./config/topics.yml'))
+    topics = Bing::Topics.new(total: total, keywords: keywords)
     search = Bing::Search.new
     topics.each do |topic|
       search.topic = topic

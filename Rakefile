@@ -28,7 +28,7 @@ end
 
 desc 'get some Bing points'
 task :bing_search do
-  [:pc, :mobile].each {|mode| Application.run(mode: mode, logger: Application.logger)}
+  [:pc, :mobile].each {|mode| Application.run(mode: mode, logger: Application.logger, keywords: YAML::load_file(CONFIG_DIR + 'topics.yml'))}
 end
 
 desc 'test browser'
