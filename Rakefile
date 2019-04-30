@@ -36,9 +36,9 @@ task :bing_search do
   logger = Logger.new($stdout) #Application.logger
   modes.each do |mode|
     browser = Application.browser(screen_capture_dir: TMP_DIR, mode: mode, logger: logger)
-    Application.show_points(browser: browser, logger: logger) if mode == modes.first
-    Application.bing_search(browser: browser, logger: logger, keywords: keywords)
-    Application.show_points(browser: browser, logger: logger) if mode == modes.last
+    Application.show_points(browser: browser) if mode == modes.first
+    Application.bing_search(browser: browser, keywords: keywords)
+    Application.show_points(browser: browser) if mode == modes.last
     browser.quit
   end
 end
