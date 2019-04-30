@@ -55,8 +55,6 @@ class Application
     browser = Browser.new(mode: mode, logger: logger)
     total = browser.pc_mode? ? pc_total : mobile_total
 
-    browser.start_headless if defined? Headless
-
     if Application.is_production?
       login = Bing::Login.new(browser: browser, username: Application.user, password: Application.password, logger: logger)
       login.run
