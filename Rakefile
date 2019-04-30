@@ -28,7 +28,7 @@ end
 
 desc 'get some Bing points'
 task :bing_search do
-  [:pc, :mobile].each {|mode| Application.run(mode: mode, logger: logger)}
+  [:pc, :mobile].each {|mode| Application.run(mode: mode, logger: Application.logger)}
 end
 
 desc 'test browser'
