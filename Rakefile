@@ -32,9 +32,15 @@ desc 'get some Bing points'
 task :bing_search do
   keywords = YAML::load_file(CONFIG_DIR + 'topics.yml')
   modes = [:pc, :mobile]
+
+  topics = Hash.new
+  topics[:pc] = keywords.sample(keywords.size/2)
+  topics[:mobile] = keywords - topics[:pc]
+
   logger = Logger.new(Application.logger)
   modes.each do |mode|
     browser = Application.browser(screen_capture_dir: TMP_DIR, mode: mode, logger: logger)
+    keywords = topics[mode]
     Application.show_points(browser: browser) if mode == modes.first
     Application.bing_search(browser: browser, keywords: keywords)
     Application.show_points(browser: browser) if mode == modes.last
