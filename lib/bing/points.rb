@@ -3,8 +3,9 @@ module Bing
     POINTS_DETAIL_URL = 'https://account.microsoft.com/rewards/pointsbreakdown'
     REWARD_URL = 'https://account.microsoft.com/rewards'
 
-    def initialize(browser:)
+    def initialize(browser:, logger: Logger.new($stdout))
       @browser = browser
+      @logger = logger
     end
 
     def available_points
@@ -19,9 +20,16 @@ module Bing
 
     def points_detail
       @browser.jump_to POINTS_DETAIL_URL, pause: 5
-      buckets = @browser.wait_for(10) {@browser.find_elements(:xpath => "//p[contains(@class, 'pointsDetail c-subheading-3 ng-binding')]")}
-      edge_bonus, pc_search, mobile_search = buckets.map(&:text)
-      {edge_bonus: edge_bonus, pc_search: pc_search, mobile_search: mobile_search}
+      panels = @browser.wait_for(10) {@browser.find_elements(:xpath => "//p[contains(@class, 'pointsDetail c-subheading-3 ng-binding')]")}
+      @logger.debug "Score Panels on page: #{panels.size}"
+      case panels.size
+      when 4
+        level_2, edge_bonus, pc_search, mobile_search = panels.map(&:text)
+        {level_2: level_2, edge_bonus: edge_bonus, pc_search: pc_search, mobile_search: mobile_search}
+      when 3
+        edge_bonus, pc_search, mobile_search = panels.map(&:text)
+        {edge_bonus: edge_bonus, pc_search: pc_search, mobile_search: mobile_search}
+      end
     end
   end
 end
