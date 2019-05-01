@@ -9,10 +9,11 @@ module Bing
 
     def available_points
       begin
-        @browser.jump_to REWARD_URL, pause: 3
+        @browser.jump_to REWARD_URL
       rescue Selenium::WebDriver::Error::UnexpectedAlertOpenError => ex
       end
       element = @browser.wait_for(10) {@browser.find_element(:class => 'title-detail')}
+      sleep(5) # wait for animation to end
       Integer(element.text.split("\n")[0].delete(','))
     end
 
