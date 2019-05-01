@@ -48,7 +48,7 @@ class Application
       login = Bing::Login.new(browser: browser, username: Application.user, password: Application.password)
       login.run
     end
-    points = Bing::Points.new(browser: browser)
+    points = Bing::Points.new(browser: browser, logger: logger)
     logger.info "Available: #{points.available_points}"
     logger.info points.points_detail.inspect
   end
