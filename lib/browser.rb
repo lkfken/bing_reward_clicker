@@ -81,7 +81,7 @@ class Browser
       _options = Selenium::WebDriver::Firefox::Options.new
       _options.profile = profile
       if headless_mode
-        options.headless!
+        _options.headless!
         logger.info 'headless mode enabled'
         start_headless
       end
