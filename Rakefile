@@ -25,7 +25,7 @@ desc 'show Bing points'
 task :show_points do
   browser = Application.browser(screen_capture_dir: TMP_DIR, mode: :mobile, logger: Logger.new($stdout))
   Application.show_points(browser: browser)
-  # browser.quit
+  browser.quit
 end
 
 desc 'get some Bing points'
