@@ -30,6 +30,8 @@ end
 
 desc 'get some Bing points'
 task :bing_search do
+  logger = Application.logger
+
   keywords = YAML::load_file(CONFIG_DIR + 'topics.yml')
   modes = [:pc, :mobile]
 
@@ -37,7 +39,6 @@ task :bing_search do
   topics[:pc] = keywords.sample(keywords.size/2)
   topics[:mobile] = keywords - topics[:pc]
 
-  logger = Logger.new(Application.logger)
   modes.each do |mode|
     browser = Application.browser(screen_capture_dir: TMP_DIR, mode: mode, logger: logger)
     keywords = topics[mode]
