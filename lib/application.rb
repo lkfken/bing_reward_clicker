@@ -37,7 +37,14 @@ class Application
     raise "please config your .env file" if str.nil?
     str.to_i
   end
-
+  def self.topics(keywords: , modes:)
+    keywords_pool = keywords.shuffle.each_slice(keywords.size / modes.size)
+    modes.inject(Hash.new) do |h, mode|
+      some_topics = keywords_pool.next
+      h[mode] = some_topics
+      h
+    end
+  end
   def self.browser(screen_capture_dir:, mode:, logger:)
     Browser.new(screen_capture_dir: screen_capture_dir, mode: mode, logger: logger)
   end
