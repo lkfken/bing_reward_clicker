@@ -49,7 +49,7 @@ task :bing_mobile do
 
   logger = Application.logger
   keywords_source = YAML::load_file(CONFIG_DIR + 'topics.yml')
-  keywords = Application.topics(keywords: keywords_source, modes: modes)
+  keywords = Application.topics(keywords: keywords_source, modes: [mode])
 
   browser = Application.browser(screen_capture_dir: TMP_DIR, mode: mode, logger: logger)
   Application.show_points(browser: browser)
@@ -64,7 +64,7 @@ task :bing_pc do
 
   logger = Application.logger
   keywords_source = YAML::load_file(CONFIG_DIR + 'topics.yml')
-  keywords = Application.topics(keywords: keywords_source, modes: modes)
+  keywords = Application.topics(keywords: keywords_source, modes: [mode])
 
   browser = Application.browser(screen_capture_dir: TMP_DIR, mode: mode, logger: logger)
   Application.show_points(browser: browser)
