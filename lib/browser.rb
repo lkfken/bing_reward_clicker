@@ -82,7 +82,6 @@ class Browser
       _options.profile = profile
       if headless_mode
         _options.headless!
-        logger.info 'headless mode enabled'
         start_headless
       end
       _options
@@ -117,10 +116,10 @@ class Browser
   def user_agent
     case
     when pc_mode?
-      logger.debug "user-agent is set to PC"
+      logger.info "user-agent is set to PC"
       PC_AGENT
     when mobile_mode?
-      logger.debug "user-agent is set to MOBILE"
+      logger.info "user-agent is set to MOBILE"
       MOBILE_AGENT
     end
   end
