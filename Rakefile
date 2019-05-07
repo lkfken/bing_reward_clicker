@@ -52,9 +52,9 @@ task :bing_mobile do
   keywords = Application.topics(keywords: keywords_source, modes: modes)
 
   browser = Application.browser(screen_capture_dir: TMP_DIR, mode: mode, logger: logger)
-  Application.show_points(browser: browser) if mode == modes.first
+  Application.show_points(browser: browser)
   Application.bing_search(browser: browser, keywords: keywords[mode])
-  Application.show_points(browser: browser) if mode == modes.last
+  Application.show_points(browser: browser)
   browser.quit
 end
 
@@ -67,9 +67,9 @@ task :bing_pc do
   keywords = Application.topics(keywords: keywords_source, modes: modes)
 
   browser = Application.browser(screen_capture_dir: TMP_DIR, mode: mode, logger: logger)
-  Application.show_points(browser: browser) if mode == modes.first
+  Application.show_points(browser: browser)
   Application.bing_search(browser: browser, keywords: keywords[mode])
-  Application.show_points(browser: browser) if mode == modes.last
+  Application.show_points(browser: browser)
   browser.quit
 end
 
