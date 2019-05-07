@@ -30,12 +30,10 @@ end
 
 desc 'get some Bing points'
 task :bing_search do
-  logger = Application.logger
-
-  keywords_source = YAML::load_file(CONFIG_DIR + 'topics.yml')
   modes = [:pc, :mobile]
+  logger = Application.logger
+  keywords_source = YAML::load_file(CONFIG_DIR + 'topics.yml')
   keywords = Application.topics(keywords: keywords_source, modes: modes)
-
   modes.each do |mode|
     browser = Application.browser(screen_capture_dir: TMP_DIR, mode: mode, logger: logger)
     Application.show_points(browser: browser) if mode == modes.first
@@ -43,6 +41,36 @@ task :bing_search do
     Application.show_points(browser: browser) if mode == modes.last
     browser.quit
   end
+end
+
+desc 'run in specific mode'
+task :bing_mobile do
+  mode = :mobile
+
+  logger = Application.logger
+  keywords_source = YAML::load_file(CONFIG_DIR + 'topics.yml')
+  keywords = Application.topics(keywords: keywords_source, modes: modes)
+
+  browser = Application.browser(screen_capture_dir: TMP_DIR, mode: mode, logger: logger)
+  Application.show_points(browser: browser) if mode == modes.first
+  Application.bing_search(browser: browser, keywords: keywords[mode])
+  Application.show_points(browser: browser) if mode == modes.last
+  browser.quit
+end
+
+desc 'bing search in PC mode'
+task :bing_pc do
+  mode = :pc
+
+  logger = Application.logger
+  keywords_source = YAML::load_file(CONFIG_DIR + 'topics.yml')
+  keywords = Application.topics(keywords: keywords_source, modes: modes)
+
+  browser = Application.browser(screen_capture_dir: TMP_DIR, mode: mode, logger: logger)
+  Application.show_points(browser: browser) if mode == modes.first
+  Application.bing_search(browser: browser, keywords: keywords[mode])
+  Application.show_points(browser: browser) if mode == modes.last
+  browser.quit
 end
 
 desc 'test browser'
